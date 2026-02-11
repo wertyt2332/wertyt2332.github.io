@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мониторинг качества воздуха</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0c2461 0%, #1e3799 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .header p {
+            color: #a5b1c2;
+            font-size: 16px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 300px 350px;
+            gap: 30px;
+            height: calc(100vh - 250px);
+        }
+        
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .chart-title {
+            font-size: 22px;
+            font-weight: 600;
+        }
+        
+        .chart-subtitle {
+            color: #a5b1c2;
+            font-size: 14px;
+        }
+        
+        #airChart {
+            width: 100% !important;
+            height: 400px !important;
+        }
+        
+        .data-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .data-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .data-panel.active {
+            background: rgba(52, 152, 219, 0.1);
+            border-color: rgba(52, 152, 219, 0.3);
+        }
+        
+        .gas-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .gas-name {
+            font-size: 16px;
+            font-weight: 500;
+            color: #a5b1c2;
+        }
+        
+        .gas-formula {
+            font-size: 20px;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .gas-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 10px 0 5px;
+        }
+        
+        .gas-unit {
+            font-size: 14px;
+            color: #a5b1c2;
+            margin-bottom: 5px;
+        }
+        
+        .gas-error {
+            font-size: 12px;
+            color: #e74c3c;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .control-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+            text-align: center;
+        }
+        
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .control-btn.active {
+            background: rgba(52, 152, 219, 0.25);
+            border-color: #3498db;
+        }
+        
+        .info-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .info-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            height: fit-content;
+        }
+        
+        .info-panel h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #3498db;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-panel h3 i {
+            font-size: 20px;
+        }
+        
+        .info-panel p {
+            line-height: 1.6;
+            color: #d1d8e0;
+            font-size: 15px;
+        }
+        
+        .info-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #3498db;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(52, 152, 219, 0.4);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .info-btn:hover {
+            transform: scale(1.1);
+            background: #2980b9;
+        }
+        
+        .info-btn i {
+            font-size: 28px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, #1e3799 0%, #0c2461 100%);
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-header h2 {
+            font-size: 24px;
+            color: #3498db;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: #3498db;
+        }
+        
+        .modal-body {
+            line-height: 1.6;
+        }
+        
+        .modal-body p {
+            margin-bottom: 15px;
+            color: #d1d8e0;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            font-size: 18px;
+            color: #a5b1c2;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 1400px) {
+            .main-content {
+                grid-template-columns: 1fr 300px;
+                grid-template-rows: auto auto;
+                height: auto;
+            }
+            
+            .info-panels {
+                grid-column: 1 / -1;
+                flex-direction: row;
+            }
+            
+            .info-panel {
+                flex: 1;
+            }
+        }
+        
+        @media (max-width: 1100px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .data-panels {
+                grid-template-columns: repeat(2, 1fr);
+                display: grid;
+            }
+            
+            .info-panels {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                flex-wrap: wrap;
+            }
+            
+            .control-btn {
+                min-width: calc(50% - 10px);
+            }
+            
+            .data-panels {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Мониторинг качества воздуха</h1>
+                <p>Актуальные данные по концентрации газов в атмосфере</p>
+            </div>
+            <div class="chart-subtitle" id="lastUpdate">Последнее обновление: --:--:--</div>
+        </div>
+        
+        <div class="main-content">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Концентрация газов в реальном времени</div>
+                        <div class="chart-subtitle">Данные обновляются каждые 3 секунды</div>
+                    </div>
+                    <div class="chart-subtitle">Максимум 2 активных графика одновременно</div>
+                </div>
+                <div id="loading" class="loading">
+                    <div class="loading-spinner"></div>
+                </div>
+                <canvas id="airChart"></canvas>
+                
+                <div class="controls">
+                    <div class="control-btn" data-gas="NO">
+                        <div>NO</div>
+                    </div>
+                    
+                    <div class="control-btn" data-gas="NO2">
+                        <div>NO₂</div>
+                    </div>
+                    
+                    <div class="control-btn" data-gas="SO2">
+                        <div>SO₂</div>
+                    </div>
+                    
+                    <div class="control-btn" data-gas="CO">
+                        <div>CO</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="data-panels">
+                <div class="data-panel" data-gas="NO">
+                    <div class="gas-header">
+                        <div class="gas-name">Оксид азота</div>
+                        <div class="gas-formula">NO</div>
+                    </div>
+                    <div class="gas-value" id="no-value">--.--</div>
+                    <div class="gas-unit">ppm</div>
+                    <div class="gas-error">Среднее: 13.7 ± 1.52</div>
+                </div>
+                
+                <div class="data-panel" data-gas="NO2">
+                    <div class="gas-header">
+                        <div class="gas-name">Диоксид азота</div>
+                        <div class="gas-formula">NO₂</div>
+                    </div>
+                    <div class="gas-value" id="no2-value">--.--</div>
+                    <div class="gas-unit">ppm</div>
+                    <div class="gas-error">Среднее: 0.635 ± 0.646</div>
+                </div>
+                
+                <div class="data-panel" data-gas="SO2">
+                    <div class="gas-header">
+                        <div class="gas-name">Диоксид серы</div>
+                        <div class="gas-formula">SO₂</div>
+                    </div>
+                    <div class="gas-value" id="so2-value">--.--</div>
+                    <div class="gas-unit">ppm</div>
+                    <div class="gas-error">Среднее: 23.47 ± 2.5</div>
+                </div>
+                
+                <div class="data-panel" data-gas="CO">
+                    <div class="gas-header">
+                        <div class="gas-name">Оксид углерода</div>
+                        <div class="gas-formula">CO</div>
+                    </div>
+                    <div class="gas-value" id="co-value">--.--</div>
+                    <div class="gas-unit">ppm</div>
+                    <div class="gas-error">Среднее: 35.15 ± 4.74</div>
+                </div>
+            </div>
+            
+            <div class="info-panels">
+                <div class="info-panel">
+                    <h3><i class="fas fa-info-circle"></i> О показателях</h3>
+                    <p>NO (оксид азота) и NO₂ (диоксид азота) образуются при горении топлива. SO₂ (диоксид серы) выделяется при сжигании ископаемого топлива. CO (оксид углерода) — опасный газ без цвета и запаха.</p>
+                </div>
+                
+                <div class="info-panel">
+                    <h3><i class="fas fa-file-alt"></i> Описание</h3>
+                    <p id="activeGraphsText">Не выбрано ни одного графика. Нажмите на кнопки ниже графика для отображения данных.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-btn" id="infoBtn">
+            <i class="fas fa-info"></i>
+        </div>
+        
+        <div class="modal" id="infoModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>О системе мониторинга</h2>
+                    <button class="close-modal" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Данная панель отображает концентрации газов в атмосфере в реальном времени. Данные обновляются автоматически через API сервера мониторинга.</p>
+                    <p>Графики показывают изменения концентрации за последние 24 часа. Вы можете выбрать до двух газов для одновременного отображения.</p>
+                    <p>Каждый активный график отображается на своей оси значений: первый выбранный газ - на левой оси, второй - на правой.</p>
+                    <p>Текущие значения газов отображаются в панелях справа и обновляются каждые 3 секунды.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Обновлённая конфигурация газов
+        const gasConfig = {
+            'NO': { mean: 13.7, error: 1.52, color: '#3498db', unit: 'ppm' },
+            'NO2': { mean: 0.635, error: 0.646, color: '#2ecc71', unit: 'ppm' },
+            'SO2': { mean: 23.47, error: 2.5, color: '#e74c3c', unit: 'ppm' },
+            'CO': { mean: 35.15, error: 4.74, color: '#f39c12', unit: 'ppm' }
+        };
+
+        // Инициализация графика
+        const ctx = document.getElementById('airChart').getContext('2d');
+        let airChart = null;
+        let activeGases = [];
+        let chartData = {};
+        let currentValues = {
+            'NO': '--.--',
+            'NO2': '--.--',
+            'SO2': '--.--',
+            'CO': '--.--'
+        };
+        
+        // Элементы DOM
+        const loadingElement = document.getElementById('loading');
+        const activeGraphsText = document.getElementById('activeGraphsText');
+        const controlButtons = document.querySelectorAll('.control-btn');
+        const dataPanels = document.querySelectorAll('.data-panel');
+        const infoBtn = document.getElementById('infoBtn');
+        const infoModal = document.getElementById('infoModal');
+        const closeModal = document.getElementById('closeModal');
+        const lastUpdateElement = document.getElementById('lastUpdate');
+        
+        // Элементы для отображения значений
+        const valueElements = {
+            'NO': document.getElementById('no-value'),
+            'NO2': document.getElementById('no2-value'),
+            'SO2': document.getElementById('so2-value'),
+            'CO': document.getElementById('co-value')
+        };
+
+        // Функция для имитации API запроса данных для графика
+        async function fetchChartDataFromAPI(gas) {
+            // Имитация задержки от сервера
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            const config = gasConfig[gas];
+            const data = [];
+            const labels = [];
+            
+            // Генерируем данные за последние 24 часа (24 точки)
+            const now = new Date();
+            for (let i = 23; i >= 0; i--) {
+                const time = new Date(now.getTime() - i * 60 * 60 * 1000);
+                labels.push(time.getHours() + ':00');
+                
+                // Генерируем значение с нормальным распределением вокруг среднего
+                const randomValue = config.mean + (Math.random() - 0.5) * 2 * config.error;
+                data.push(parseFloat(randomValue.toFixed(3)));
+            }
+            
+            return { labels, data };
+        }
+        
+        // Функция для имитации API запроса текущего значения
+        async function fetchCurrentValueFromAPI(gas) {
+            // Имитация задержки от сервера
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
+            const config = gasConfig[gas];
+            
+            // Генерируем текущее значение с нормальным распределением вокруг среднего
+            const randomValue = config.mean + (Math.random() - 0.5) * 2 * config.error;
+            return parseFloat(randomValue.toFixed(3));
+        }
+
+        // Функция обновления графика
+        async function updateChart() {
+            loadingElement.style.display = 'flex';
+            
+            // Получаем данные для активных газов
+            const datasets = [];
+            const allLabels = [];
+            
+            for (let i = 0; i < activeGases.length; i++) {
+                const gas = activeGases[i];
+                if (!chartData[gas]) {
+                    chartData[gas] = await fetchChartDataFromAPI(gas);
+                }
+                
+                // Используем метки из первого графика
+                if (allLabels.length === 0) {
+                    allLabels.push(...chartData[gas].labels);
+                }
+                
+                // Определяем ось Y для каждого графика
+                // Первый активный газ - левая ось, второй - правая
+                const yAxisID = i === 0 ? 'y' : 'y1';
+                
+                datasets.push({
+                    label: `${gas} (${gasConfig[gas].unit})`,
+                    data: chartData[gas].data,
+                    borderColor: gasConfig[gas].color,
+                    backgroundColor: gasConfig[gas].color + '20',
+                    borderWidth: 3,
+                    fill: false,
+                    tension: 0.4,
+                    pointRadius: 3,
+                    pointHoverRadius: 6,
+                    yAxisID: yAxisID
+                });
+            }
+            
+            // Определяем конфигурацию осей
+            const scalesConfig = {
+                x: {
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        maxTicksLimit: 10
+                    }
+                }
+            };
+            
+            // Добавляем левую ось (для первого графика)
+            if (activeGases.length > 0) {
+                const firstGas = activeGases[0];
+                scalesConfig.y = {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: gasConfig[firstGas].color,
+                        callback: function(value) {
+                            return value.toFixed(2);
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: firstGas + ' (' + gasConfig[firstGas].unit + ')',
+                        color: gasConfig[firstGas].color
+                    }
+                };
+            }
+            
+            // Добавляем правую ось (для второго графика)
+            if (activeGases.length > 1) {
+                const secondGas = activeGases[1];
+                scalesConfig.y1 = {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: {
+                        drawOnChartArea: false,
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    ticks: {
+                        color: gasConfig[secondGas].color,
+                        callback: function(value) {
+                            return value.toFixed(2);
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: secondGas + ' (' + gasConfig[secondGas].unit + ')',
+                        color: gasConfig[secondGas].color
+                    }
+                };
+            }
+            
+            // Если график уже существует, обновляем его
+            if (airChart) {
+                airChart.data.labels = allLabels;
+                airChart.data.datasets = datasets;
+                airChart.options.scales = scalesConfig;
+                airChart.update();
+            } else {
+                // Создаем новый график
+                loadingElement.style.display = 'none';
+                airChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: allLabels,
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: scalesConfig,
+                        plugins: {
+                            legend: {
+                                display: false,
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        label += context.parsed.y.toFixed(3);
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            loadingElement.style.display = 'none';
+            updateActiveGraphsText();
+            updateLastUpdateTime();
+        }
+        
+        // Функция обновления текущих значений газов
+        async function updateCurrentValues() {
+            for (const gas of Object.keys(gasConfig)) {
+                const currentValue = await fetchCurrentValueFromAPI(gas);
+                currentValues[gas] = currentValue.toFixed(2);
+                valueElements[gas].textContent = currentValues[gas];
+                
+                // Обновляем цвет значения в зависимости от отклонения от среднего
+                const config = gasConfig[gas];
+                const deviation = Math.abs(currentValue - config.mean);
+                const maxDeviation = config.error * 1.5;
+                
+                if (deviation > maxDeviation) {
+                    valueElements[gas].style.color = '#e74c3c';
+                } else if (deviation > config.error) {
+                    valueElements[gas].style.color = '#f39c12';
+                } else {
+                    valueElements[gas].style.color = '#2ecc71';
+                }
+            }
+        }
+
+        // Функция обновления текста активных графиков
+        function updateActiveGraphsText() {
+            if (activeGases.length === 0) {
+                activeGraphsText.textContent = 'Не выбрано ни одного графика. Нажмите на кнопки ниже графика для отображения данных.';
+            } else {
+                const gasesText = activeGases.map((gas, index) => {
+                    const config = gasConfig[gas];
+                    const axis = index === 0 ? 'левая ось' : 'правая ось';
+                    return `${gas}: среднее = ${config.mean} ± ${config.error} ${config.unit} (${axis})`;
+                }).join('<br>');
+                activeGraphsText.innerHTML = `<strong>Активные графики:</strong><br>${gasesText}`;
+            }
+        }
+
+        // Функция обновления времени последнего обновления
+        function updateLastUpdateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('ru-RU', { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+            lastUpdateElement.textContent = `Последнее обновление: ${timeString}`;
+        }
+
+        // Обработчики для кнопок управления графиками
+        controlButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const gas = this.dataset.gas;
+                
+                // Если кнопка уже активна, деактивируем ее
+                if (this.classList.contains('active')) {
+                    const index = activeGases.indexOf(gas);
+                    activeGases.splice(index, 1);
+                    this.classList.remove('active');
+                    
+                    // Обновляем панель данных
+                    const dataPanel = document.querySelector(`.data-panel[data-gas="${gas}"]`);
+                    dataPanel.classList.remove('active');
+                    
+                    updateChart();
+                    return;
+                }
+                
+                // Если уже выбрано 2 газа, убираем первый и добавляем новый
+                if (activeGases.length >= 2) {
+                    const removedGas = activeGases.shift();
+                    const removedButton = document.querySelector(`.control-btn[data-gas="${removedGas}"]`);
+                    removedButton.classList.remove('active');
+                    
+                    // Обновляем панель данных
+                    const removedPanel = document.querySelector(`.data-panel[data-gas="${removedGas}"]`);
+                    removedPanel.classList.remove('active');
+                }
+                
+                // Добавляем новый газ
+                activeGases.push(gas);
+                this.classList.add('active');
+                
+                // Обновляем панель данных
+                const dataPanel = document.querySelector(`.data-panel[data-gas="${gas}"]`);
+                dataPanel.classList.add('active');
+                
+                updateChart();
+            });
+        });
+        
+        // Обработчики для панелей данных (по клику тоже можно активировать график)
+        dataPanels.forEach(panel => {
+            panel.addEventListener('click', function() {
+                const gas = this.dataset.gas;
+                const button = document.querySelector(`.control-btn[data-gas="${gas}"]`);
+                button.click(); // Имитируем клик по соответствующей кнопке
+            });
+        });
+
+        // Имитация периодического обновления данных с интервалом 3 секунды
+        function simulateDataUpdates() {
+            // Каждые 3 секунды обновляем текущие значения и график
+            setInterval(async () => {
+                // Обновляем текущие значения
+                await updateCurrentValues();
+                
+                // Если есть активные газы, обновляем данные для графиков
+                if (activeGases.length > 0) {
+                    // Обновляем данные для каждого активного газа
+                    for (const gas of activeGases) {
+                        const newData = await fetchChartDataFromAPI(gas);
+                        chartData[gas] = newData;
+                    }
+                    
+                    // Если график уже создан, обновляем его
+                    if (airChart) {
+                        updateChart();
+                    }
+                }
+            }, 3000); // 3000 мс = 3 секунды
+        }
+
+        // Обработчики для модального окна
+        infoBtn.addEventListener('click', function() {
+            infoModal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', function() {
+            infoModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === infoModal) {
+                infoModal.style.display = 'none';
+            }
+        });
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Активируем первые два графика по умолчанию
+            const defaultGases = ['NO', 'NO2'];
+            defaultGases.forEach(gas => {
+                const button = document.querySelector(`.control-btn[data-gas="${gas}"]`);
+                button.classList.add('active');
+                
+                const dataPanel = document.querySelector(`.data-panel[data-gas="${gas}"]`);
+                dataPanel.classList.add('active');
+                
+                activeGases.push(gas);
+            });
+            
+            // Загружаем начальные текущие значения
+            await updateCurrentValues();
+            
+            // Запускаем обновление графика
+            await updateChart();
+            
+            // Запускаем периодическое обновление данных каждые 3 секунды
+            simulateDataUpdates();
+        });
+
+        // Обновляем время каждую секунду
+        setInterval(updateLastUpdateTime, 1000);
+    </script>
+</body>
+</html>
