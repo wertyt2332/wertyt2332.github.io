@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Печорин</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f3efe9;
+      font-family: 'Source Sans Pro', sans-serif;
+      color: #1f1b17;
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .page {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    .hero {
+      margin-bottom: 3.5rem;
+      position: relative;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid #d6c9bc;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 3.8rem;
+      letter-spacing: -0.02em;
+      color: #2c221c;
+      line-height: 1.1;
+      margin-bottom: 0.35rem;
+    }
+
+    .hero-sub {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.5rem;
+      color: #6f5b4e;
+      margin-bottom: 0.8rem;
+      font-weight: 400;
+    }
+
+    .epigraph {
+      max-width: 680px;
+      font-size: 1.15rem;
+      color: #4b3f37;
+      padding-left: 1rem;
+      border-left: 4px solid #a5836e;
+      font-style: italic;
+      margin-top: 0.8rem;
+    }
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem 2.5rem;
+      margin: 2.5rem 0;
+    }
+
+    .card {
+      background: #fffbf8;
+      border-radius: 24px;
+      padding: 1.8rem 1.8rem 2rem 1.8rem;
+      box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e7ddd4;
+      transition: transform 0.15s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 18px 28px -10px rgba(60, 40, 30, 0.08);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      border-bottom: 1px dashed #d1c1b5;
+      padding-bottom: 0.6rem;
+    }
+
+    .card-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1.9rem;
+      color: #2e231e;
+      letter-spacing: -0.01em;
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      line-height: 1;
+      opacity: 0.7;
+    }
+
+    .desc-text {
+      font-size: 1.05rem;
+      color: #2b221d;
+      margin-bottom: 1.8rem;
+    }
+    .quote-collection {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .quote-item {
+      font-style: italic;
+      padding: 0.5rem 0 0.5rem 1.2rem;
+      border-left: 3px solid #b99e8c;
+      color: #3d322b;
+      font-size: 0.98rem;
+      background: #faf5f0;
+      border-radius: 0 12px 12px 0;
+    }
+
+    .quote-big {
+      font-size: 1.3rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: #4b362b;
+      text-align: center;
+      padding: 1rem 1.5rem;
+      background: #ede3db;
+      border-radius: 60px 20px 60px 20px;
+      margin: 2rem 0 1.5rem;
+    }
+
+    .conclusion-panel {
+      background: #e6dbd1;
+      border-radius: 28px;
+      padding: 2.3rem 2.8rem;
+      margin: 3rem 0 2.5rem;
+      border: 1px solid #cbb7a8;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
+    }
+
+    .conclusion-panel h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      color: #1f1611;
+    }
+
+    .conclusion-text {
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    .qa-section {
+      margin-top: 2.8rem;
+    }
+
+    .qa-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 1.8rem;
+      color: #2c221c;
+    }
+
+    .qa-item {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 2rem;
+      background: #fffcf9;
+      border-radius: 20px;
+      padding: 1.5rem 2rem;
+      border: 1px solid #ddd0c5;
+    }
+
+    .question {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #34261e;
+      margin-bottom: 0.7rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .question::before {
+      content: "❝";
+      font-size: 2rem;
+      color: #8f7261;
+      opacity: 0.7;
+    }
+
+    .answer {
+      padding-left: 2.2rem;
+      font-size: 1.08rem;
+      color: #2e241f;
+      border-left: 2px solid #ccb6a6;
+      margin-left: 0.8rem;
+    }
+
+    .quick-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem 2.5rem;
+      background: #fff8f3;
+      padding: 1.8rem 2.2rem;
+      border-radius: 48px 16px 48px 16px;
+      margin: 1.5rem 0 2.8rem;
+      border: 1px solid #ddcfc2;
+    }
+
+    .fact-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fact-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #7f6b5d;
+      font-weight: 600;
+    }
+
+    .fact-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #251c16;
+    }
+
+    @media (max-width: 800px) {
+      h1 { font-size: 2.8rem; }
+      .grid-2col { grid-template-columns: 1fr; gap: 1.5rem; }
+      .quick-facts { flex-direction: column; gap: 0.8rem; }
+      .conclusion-panel { padding: 1.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 1rem 0.8rem; }
+      .card { padding: 1.5rem; }
+    }
+
+    .small-note {
+      margin-top: 2.5rem;
+      text-align: right;
+      font-size: 0.9rem;
+      color: #7b6a5f;
+      border-top: 1px solid #d9cdc1;
+      padding-top: 1.5rem;
+    }
+
+    .flex-quote-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hero">
+    <h1>Григорий<br>Печорин</h1>
+    <div class="hero-sub">психологический портрет</div>
+    <div class="epigraph">
+      «История души человеческой … едва ли не любопытнее истории целого народа» <br>- М. Лермонтов
+    </div>
+  </div>
+  <div class="quick-facts">
+    <div class="fact-item">
+      <span class="fact-label">Имя / статус</span>
+      <span class="fact-value">Григорий Печорин, офицер</span>
+    </div>
+    <div class="fact-item">
+      <span class="fact-label">Возраст / здоровье</span>
+      <span class="fact-value">Молод, физически крепок</span>
+    </div>
+    <div class="fact-item">
+      <span class="fact-label">Внутреннее состояние</span>
+      <span class="fact-value">«Пережил жизнь мысленно»</span>
+    </div>
+  </div>
+  <div class="grid-2col">
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">⚖️</span>
+        <h2>Отношение к себе и миру</h2>
+      </div>
+      <div class="desc-text">
+        Печорин колеблется между ощущением избранности и презрением к себе. Люди для него - источник развлечения и объект наблюдения. Любовь не приносит счастья никому. Он устал от жизни, всё кажется предсказуемым.
+      </div>
+      <div class="quote-collection">
+        <div class="quote-item">«Моя любовь никому не принесла счастья, потому что я ничем не жертвовал для тех, кого любил»</div>
+        <div class="quote-item">«Я только удовлетворял странную потребность сердца, с жадностью поглощая их чувства»</div>
+        <div class="quote-item">«Зачем я жил? Для какой цели я родился?»</div>
+        <div class="quote-item">«Я чувствую в душе моей силы необъятные... Но я не угадал этого назначения»</div>
+        <div class="quote-item">«Одни почитают меня хуже, другие лучше, чем я в самом деле... И то и другое будет ложно»</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🧠</span>
+        <h2>Мышление и рефлексия</h2>
+      </div>
+      <div class="desc-text">
+        Острый аналитический ум, склонность к сомнению и самонаблюдению. Он словно раздвоен: один живёт, другой судит. Живёт «головою», а не сердцем.
+      </div>
+      <div class="quote-collection">
+        <div class="quote-item">«Я люблю сомневаться во всём: это расположение ума не мешает решительности характера»</div>
+        <div class="quote-item">«Во мне два человека: один живёт, другой мыслит и судит его»</div>
+        <div class="quote-item">«Я взвешиваю, разбираю свои собственные страсти и поступки с строгим любопытством, но без участия»</div>
+        <div class="quote-item">«Из жизненной бури я вынес только несколько идей - и ни одного чувства»</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">👁️</span>
+        <h2>Внимание · память · интерес</h2>
+      </div>
+      <div class="desc-text">
+        Феноменальная наблюдательность: ловит взгляды, угадывает намерения. Память цепкая, но используется холодно. Интерес - только к интриге и опасности.
+      </div>
+      <div class="quote-collection">
+        <div class="quote-item">«Быть всегда настороже, ловить каждый взгляд, значение каждого слова, угадывать намерения»</div>
+        <div class="quote-item">«Я хотел испытать его; в душе его могла проснуться искра великодушия»</div>
+        <div class="quote-item">«Явно судьба заботится о том, чтоб мне не было скучно»</div>
+        <div class="quote-item">«Разрушать заговоры, притворяться обманутым - вот что я называю жизнью»</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🗣️</span>
+        <h2>Речь и прямота</h2>
+      </div>
+      <div class="desc-text">
+        Выразительная, точная речь, часто резкая. Говорит правду в лицо, не ищет одобрения. Ирония и горькая откровенность.
+      </div>
+      <div class="quote-collection">
+        <div class="quote-item">«Я вам скажу всю истину, не буду оправдываться, ни объяснять своих поступков; я вас не люблю»</div>
+        <div class="quote-item">«Со мной так не шутят. Вы дорого можете заплатить за одобрение ваших глупых товарищей»</div>
+        <div class="quote-item">«Хотите ли, доктор, чтоб я раскрыл вам мою душу?»</div>
+        <div class="quote-item">«Думая о близкой и возможной смерти, я думаю об одном себе»</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🌊</span>
+        <h2>Эмоции под контролем</h2>
+      </div>
+      <div class="desc-text">
+        Внешне холоден, внутри - буря. Умеет подавлять чувства, но они прорываются. Испытывает злорадство, бешенство, наслаждение чужими слезами.
+      </div>
+      <div class="quote-collection">
+        <div class="quote-item">«Сердце моё сильно билось, но мысли были спокойны, голова холодна»</div>
+        <div class="quote-item">«Неизъяснимое бешенство закипело в груди моей»</div>
+        <div class="quote-item">«Она проведёт ночь без сна и будет плакать. Эта мысль доставляет мне необъятное наслаждение»</div>
+        <div class="quote-item">«Я молился, проклинал, плакал, смеялся... нет, ничто не выразит моего беспокойства, отчаяния!»</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">⚡</span>
+        <h2>Темперамент и воля</h2>
+      </div>
+      <div class="desc-text">
+        Сильный, неуравновешенный, нуждается в постоянной встряске. Железная воля - но только для собственных целей.
+      </div>
+      <div class="quote-collection">
+        <div class="quote-item">«Я скакал, задыхаясь от нетерпенья»</div>
+        <div class="quote-item">«Когда не знаю, что меня ожидает - я всегда смелее иду вперёд»</div>
+        <div class="quote-item">«Свободы моей не продам»</div>
+        <div class="quote-item">«Я как безумный выскочил на крыльцо, прыгнул на своего Черкеса»</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="quote-big">
+    «Я вступил в эту жизнь, пережив её уже мысленно, и мне стало скучно и гадко»
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin: 1.8rem 0 2.5rem;">
+    <div style="flex: 1.5; min-width: 240px; background: #fffbf8; border-radius: 24px; padding: 1.8rem; border: 1px solid #e7ddd4;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1.2rem;">Черты характера</h3>
+        <p>Решителен, инициативен, самостоятелен. Холоден, манипулятивен, безжалостен. Самокритичен, но это не меняет поведения.</p>
+        <div class="quote-item" style="margin-top: 1rem;">«Я иногда себя презираю… не оттого ли я презираю и других?»</div>
+        <div class="quote-item">«Я стал не способен к благородным порывам; я боюсь показаться смешным самому себе»</div>
+        <div class="quote-item">«Свободы моей не продам»</div>
+    </div>
+    <div style="flex: 1.5; min-width: 240px; background: #fffbf8; border-radius: 24px; padding: 1.8rem; border: 1px solid #e7ddd4;">
+      <h3 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 1.2rem;">Общение и одиночество</h3>
+      <p>Друзей нет. Люди восхищаются или боятся, но он не ищет близости. На вопрос о друзьях - качает головой.</p>
+      <div class="quote-item" style="margin-top: 1rem;">«Вид человека был мне тягостен: я хотел быть один»</div>
+      <div class="quote-item">«Я люблю врагов... Они меня забавляют, волнуют мне кровь»</div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2.2rem;">
+    <div class="card" style="margin:0;">
+      <div class="card-header">
+        <span class="card-icon">📐</span>
+        <h2>Интеллект и мораль</h2>
+      </div>
+      <div class="desc-text">Высокий интеллект, глубокий анализ. Нравственно - понимает, что поступает дурно, но не останавливается. Свои интересы важнее.</div>
+      <div class="quote-item">«Как орудие казни, я упадал на голову обречённых жертв, часто без злобы, всегда без сожаления»</div>
+      <div class="quote-item">«Я иногда себя презираю... не оттого ли я презираю и других?»</div>
+    </div>
+    <div class="card" style="margin:0;">
+      <div class="card-header">
+        <span class="card-icon">🪞</span>
+        <h2>Личность или индивидуальность?</h2>
+      </div>
+      <div class="desc-text">Яркая индивидуальность, не похож на других. Но личность в полном смысле - нет: не берёт ответственности за других. Однако совесть не спит.</div>
+      <div class="quote-item">«И, может быть, я завтра умру!.. и не останется ни одного существа, которое бы поняло меня совершенно»</div>
+      <div class="quote-item">«Думая о близкой смерти, я думаю об одном себе: иные не делают и этого»</div>
+    </div>
+  </div>
+
+  <div class="conclusion-panel">
+    <h3>Выводы</h3>
+    <div class="conclusion-text">
+      Печорин - сложная, противоречивая личность с высоким интеллектом и сломанной эмоциональной сферой. Он осознаёт себя, но не может измениться - или не хочет. Его трагедия не в том, что он злой, а в том, что он живёт в мире, где всё уже «прочитано» до того, как началось. Он герой своего времени именно потому, что воплощает болезнь целого поколения: умных, рефлексирующих людей, у которых нет ни веры, ни цели, ни живого отклика на мир вокруг.
+    </div>
+  </div>
+
+  <div class="qa-section">
+    <div class="qa-title">❓ Вопросы, которые ставят в тупик</div>
+
+    <div class="qa-item">
+      <div class="question">Почему у него нет друзей, может, он боится людей?</div>
+      <div class="answer">
+        Нет, не боится. Он сам идёт к людям, умеет очаровывать. Но на вопрос «есть ли у вас друзья?» он просто молча качает головой. А ещё он говорит, что хочет быть один, когда ему тяжело, и что вид людей его тяготит. Это не страх, а другое: ему люди нужны как развлечение, а не как близкие.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question">Если он понимает, что делает плохо, тогда почему не останавливается?</div>
+      <div class="answer">
+        Он сам пишет: «как орудие казни, я упадал на голову обречённых жертв, часто без злобы, всегда без сожаления». То есть он понимает и при этом не сожалеет. Знание есть, а остановки нет. Это не потому, что он слабый. Просто для него его собственный интерес и ощущения важнее, чем чужая боль. Он говорит прямо: свободы своей не продаст ни за что.
+      </div>
+    </div>
+
+    <div class="qa-item">
+      <div class="question">Он вообще что-нибудь чувствует?</div>
+      <div class="answer">
+        Чувствует и ещё как. Перед дуэлью не спит всю ночь, сердце колотится. В один момент он пишет: «молился, проклинал, плакал, смеялся». Но он умеет это прятать: голова остаётся холодной, даже когда внутри буря. Он сам говорит, что живёт не сердцем, а головою. То есть чувства есть, но он их не слушает.
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: 3rem; text-align: center; font-family: 'Playfair Display', serif; font-style: italic; color: #5f4b3e;">
+    «…Зачем я жил? для какой цели я родился?.. А, верно, она существовала, и, верно, было мне назначение высокое…»
+  </div>
+</div>
+</body>
+</html>
