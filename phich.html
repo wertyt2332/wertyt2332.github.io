@@ -43,6 +43,41 @@
       line-height: 1.1;
       margin-bottom: 0.35rem;
     }
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid #d6c9bc;
+    }
+
+    .header-btn {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: transparent;
+      border: 2px solid #a5836e;
+      color: #4b3f37;
+      padding: 0.6rem 1.8rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .header-btn:hover {
+      background-color: #a5836e;
+      color: #fefaf7;
+      border-color: #8f6e5a;
+      box-shadow: 0 6px 12px rgba(139, 102, 80, 0.12);
+    }
 
     .hero-sub {
       font-family: 'Playfair Display', serif;
@@ -244,12 +279,14 @@
       .grid-2col { grid-template-columns: 1fr; gap: 1.5rem; }
       .quick-facts { flex-direction: column; gap: 0.8rem; }
       .conclusion-panel { padding: 1.8rem; }
+      .site-header { flex-direction: column; gap: 1rem; }
     }
 
     @media (max-width: 480px) {
       body { padding: 1rem 0.8rem; }
       .card { padding: 1.5rem; }
     }
+
 
     .small-note {
       margin-top: 2.5rem;
@@ -269,6 +306,12 @@
 </head>
 <body>
 <div class="page">
+
+
+  <header class="site-header">
+    <a href="https://wertyt2332.github.io/weour.html" class="header-btn" style="background-color: #a5836e; color: #fefaf7;">О нас</a>
+    <a href="https://wertyt2332.github.io/" class="header-btn">Главная</a>
+  </header>
 
   <div class="hero" style="display: flex; align-items: center; justify-content: space-between; gap: 2rem;">
     <div style="flex: 1;">
@@ -323,7 +366,7 @@
     <div class="card">
       <div class="card-header">
         <span class="card-icon">👁️</span>
-        <h2>Внимание · память · интерес</h2>
+        <h2>Внимание, память, интерес</h2>
       </div>
       <div class="desc-text">
         Феноменальная наблюдательность: ловит взгляды, угадывает намерения. Память цепкая, но используется холодно. Интерес - только к интриге и опасности.
