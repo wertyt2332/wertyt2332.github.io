@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>Главная</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+Pro:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f3efe9;
+      font-family: 'Source Sans Pro', sans-serif;
+      color: #1f1b17;
+      line-height: 1.5;
+      padding: 2rem 1.5rem;
+    }
+
+    .page {
+      max-width: 1300px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      color: #2c221c;
+    }
+
+    h1 {
+      font-size: 4rem;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1.5rem;
+      font-weight: 600;
+    }
+
+    .card-like {
+      background: #fffbf8;
+      border-radius: 24px;
+      padding: 1.8rem 2rem;
+      box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e7ddd4;
+    }
+
+
+    .site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2.5rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 1px solid #d6c9bc;
+    }
+
+    .header-btn {
+      font-family: 'Source Sans Pro', sans-serif;
+      font-weight: 600;
+      font-size: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: transparent;
+      border: 2px solid #a5836e;
+      color: #4b3f37;
+      padding: 0.6rem 1.8rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(2px);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    }
+
+    .header-btn:hover {
+      background-color: #a5836e;
+      color: #fefaf7;
+      border-color: #8f6e5a;
+      box-shadow: 0 6px 12px rgba(139, 102, 80, 0.12);
+    }
+
+    .two-thirds-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin: 3rem 0 3rem;
+      align-items: flex-start;
+    }
+
+    .text-block {
+      flex: 2;
+      min-width: 280px;
+    }
+
+    .image-block {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .image-block img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 24px;
+      box-shadow: 0 18px 28px -10px rgba(60, 40, 30, 0.12);
+      border: 1px solid #e7ddd4;
+    }
+
+    .full-width-text {
+      margin: 2.5rem 0 3.5rem;
+      padding: 1.8rem 2.5rem;
+      background: #ede3db;
+      border-radius: 28px;
+      border: 1px solid #cbb7a8;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
+      font-size: 1.15rem;
+      line-height: 1.7;
+    }
+
+    .illustration-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin: 2.5rem 0 2rem;
+    }
+
+    .illustration-card {
+      background: #fffbf8;
+      border-radius: 24px;
+      padding: 1.2rem 1.2rem 1.5rem;
+      box-shadow: 0 10px 20px -8px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e7ddd4;
+      transition: transform 0.15s;
+      text-align: center;
+    }
+
+    .illustration-card:hover {
+      box-shadow: 0 18px 28px -10px rgba(60, 40, 30, 0.1);
+    }
+
+    .illustration-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 18px;
+      margin-bottom: 0rem;
+      border: 1px solid #d6c9bc;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+    }
+
+    .illustration-caption {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: #2e231e;
+      margin-bottom: 0.3rem;
+    }
+
+    .illustration-sub {
+      color: #6f5b4e;
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    .footer-note {
+      margin-top: 3.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #7b6a5f;
+      border-top: 1px solid #d9cdc1;
+      padding-top: 2rem;
+    }
+
+    @media (max-width: 750px) {
+      h1 { font-size: 3rem; }
+      .two-thirds-row {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+      .illustration-row {
+        grid-template-columns: 1fr;
+        gap: 0rem;
+      }
+      .full-width-text {
+        padding: 1.5rem;
+      }
+      .header-btn {
+        font-size: 1rem;
+        padding: 0.4rem 1.2rem;
+      }
+    }
+
+/
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+  <header class="site-header">
+    <a href="https://wertyt2332.github.io/weour.html" class="header-btn">О нас</a>
+    <a href="https://wertyt2332.github.io/phich.html" class="header-btn">Психотип</a>
+  </header>
+  <h1>ПСИХОТИП ПЕЧОРИНА</h1>
+  <div class="two-thirds-row">
+    <div class="text-block card-like">
+      <h2 style="font-size: 2rem; margin-bottom: 1.2rem;">Кто такой Печорин?</h2>
+      <p class="lead-text" style="margin-bottom: 1.2rem;">
+        Григорий Александрович Печорин — вымышленный персонаж, офицер русской императорской армии, главный герой романов Михаила Лермонтова «Княгиня Лиговская» (незавершённый) и «Герой нашего времени»
+      </p>
+    </div>
+    <div class="image-block" style= "flex: 1 1;">
+      <img src="https://sun9-84.userapi.com/s/v1/ig2/L9Rma3yY9PhlcDbgNumhyLjWnxSSF0wmSm1C_euAzU2WC4SSRADwiiVw_vTNX_B6oDdmTpoO16F-D7ukWrlKoQS6.jpg?quality=95&as=32x39,48x59,72x88,108x132,160x195,240x293,360x439,473x577&from=bu&u=2a5nACKeg4N2n1bLQt3OCsVxjzmqotemQz6Nev_rLhU&cs=473x0">
+    </div>
+  </div>
+
+  <div class="text-block card-like">
+    <h3 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 1rem; color: #1f1611;">Герой нашего времени</h3>
+    <p style="margin-bottom: 1rem;">
+      «Герой нашего времени» (1840) по праву считается первым психологическим романом в русской литературе.
+В основе повествования — история жизни главного героя, Григория Печорина. Произведение состоит из пяти частей, расположенных не в хронологическом порядке, однако в этом есть своя логика. Писатель постепенно начинает погружать читателя во внутренний мир его героя, циника, прожигателя жизни, ни во что не верящего, противоречивого и неоднозначного.
+При всем при этом «Герой нашего времени» — это и философское произведение, ставящее перед читателем важнейшие вопросы о смысле жизни, о роли фатума; это еще и любовный роман, увлекательный, волнующий и трагический.
+Написанный в позапрошлом веке «Герой нашего времени», не теряет своей актуальности, потому что в каждом есть свои герои, свои Печорины, свои «лишние люди».
+    </p>
+  </div>
+  <div class="illustration-row">
+    <div class="illustration-card">
+      <img src="https://sun9-54.userapi.com/s/v1/ig2/heg1OYSfQOFsMJ7gHc978cY8T3lyECohruzuIEbkV6c2QcIwbxrNxbR8R9Z0EosDpklJR1VNkAIaqOHfpolZ0BBf.jpg?quality=95&as=32x39,48x59,72x88,108x132,160x196,240x293,360x440,387x473&from=bu&cs=387x0">
+    </div>
+    <div class="illustration-card">
+      <img src="https://sun9-44.userapi.com/s/v1/ig2/uLCiokeq11xp_frQ48SUQ-8DNPpuBx0ZIyR9hyFIq5tSRExIppMVldL3dB-IDcrIoDNFl0Kz8rNArmIiROXRI_vN.jpg?quality=95&as=32x39,48x59,72x89,108x133,160x197,240x295,360x443,382x470&from=bu&cs=382x0">
+    </div>
+    <div class="illustration-card">
+      <img src="https://sun9-11.userapi.com/s/v1/ig2/ohV_dLep5wI-xnrTnKaGRhKGzxd919jd0oZZ62dp62m4jLzaGZRhSYugkJK1V4SshrxEdrn__hSxiiaP3Mi5cR90.jpg?quality=95&as=32x38,48x56,72x85,108x127,160x188,240x282,360x423,394x463&from=bu&cs=394x0">
+    </div>
+  </div>
+  <div style="margin-top: 3rem; text-align: center; font-family: 'Playfair Display', serif; font-style: italic; color: #5f4b3e;">
+    «…Зачем я жил? для какой цели я родился?.. А, верно, она существовала, и, верно, было мне назначение высокое…»
+  </div>
+
+</div>
+<script>
+  (function() {
+    // Просто чтобы кнопки не вызывали ошибок, алерт уже в onclick.
+    console.log('Сайт "Психотип" — цветовая палитра из примера, структура по ТЗ.');
+  })();
+</script>
+</body>
+</html>
