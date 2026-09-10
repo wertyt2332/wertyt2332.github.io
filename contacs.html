@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Контакты — Название сайта</title>
+<style>
+  /* ===== Базовые сбросы и переменные ===== */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f7f5f0;
+    --text: #1c1c1c;
+    --muted: #6b6b6b;
+    --accent: #8a6d3b;
+    --border: #e0dcd3;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* ===== ШАПКА ===== */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(247, 245, 240, 0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+
+  .burger {
+    width: 42px; height: 42px;
+    border: none; background: transparent;
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    gap: 5px; border-radius: 6px;
+    transition: background 0.2s ease;
+  }
+  .burger:hover { background: rgba(0, 0, 0, 0.05); }
+  .burger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--text);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.active span:nth-child(2) { opacity: 0; }
+  .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .site-title {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .search-btn {
+    width: 42px; height: 42px;
+    border: none; background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+  }
+  .search-btn:hover { background: rgba(0, 0, 0, 0.05); }
+  .search-btn svg {
+    width: 20px; height: 20px;
+    stroke: var(--text); fill: none;
+    stroke-width: 2; stroke-linecap: round;
+  }
+
+  /* ===== ШТОРКА МЕНЮ ===== */
+  .drawer {
+    position: fixed;
+    top: 0; left: 0;
+    width: 300px;
+    max-width: 85vw;
+    height: 100%;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+    transform: translateX(-100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 200;
+    display: flex; flex-direction: column;
+    padding: 90px 0 24px 0;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer nav { flex: 1; overflow-y: auto; }
+  .drawer nav a {
+    display: block;
+    padding: 16px 32px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 18px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+  }
+  .drawer nav a:hover {
+    background: var(--bg);
+    border-left-color: var(--accent);
+    padding-left: 38px;
+  }
+  .drawer .contacts {
+    padding: 16px 24px 0 24px;
+    border-top: 1px solid var(--border);
+  }
+  .drawer .contacts a {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    background: var(--text);
+    color: #fff;
+    text-decoration: none;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+  }
+  .drawer .contacts a:hover { background: var(--accent); }
+
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 150;
+  }
+  .overlay.show { opacity: 1; visibility: visible; }
+
+  /* ===== ПОИСК ===== */
+  .search-modal {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex; align-items: flex-start; justify-content: center;
+    padding-top: 120px;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 300;
+  }
+  .search-modal.show { opacity: 1; visibility: visible; }
+  .search-box {
+    background: #fff;
+    width: 90%; max-width: 600px;
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: var(--shadow);
+    transform: translateY(-20px);
+    transition: transform 0.3s ease;
+  }
+  .search-modal.show .search-box { transform: translateY(0); }
+  .search-box svg {
+    width: 20px; height: 20px;
+    stroke: var(--muted); fill: none;
+    stroke-width: 2; stroke-linecap: round;
+    flex-shrink: 0;
+  }
+  .search-box input {
+    flex: 1; border: none; outline: none;
+    font-size: 18px;
+    font-family: inherit;
+    background: transparent;
+    color: var(--text);
+  }
+  .search-box input::placeholder { color: var(--muted); }
+
+  /* ===== КОНТЕНТ СТРАНИЦЫ КОНТАКТОВ ===== */
+  main {
+    padding: 130px 24px 80px 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  /* Заголовок страницы */
+  .page-title {
+    font-size: clamp(34px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 12px;
+    animation: fadeIn 0.8s ease 0.1s both;
+  }
+
+  .page-subtitle {
+    text-align: center;
+    color: var(--muted);
+    font-size: 16px;
+    letter-spacing: 1px;
+    margin-bottom: 60px;
+    animation: fadeIn 0.8s ease 0.3s both;
+  }
+
+  .divider {
+    width: 60px;
+    height: 2px;
+    background: var(--accent);
+    margin: 0 auto 60px auto;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Карточки авторов */
+  .authors {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+    margin-bottom: 90px;
+  }
+
+  .author-card {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 28px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 0.8s ease both;
+  }
+  .author-card:nth-child(1) { animation-delay: 0.4s; }
+  .author-card:nth-child(2) { animation-delay: 0.5s; }
+
+  .author-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow);
+  }
+
+  .author-photo {
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 22px auto;
+    border-radius: 50%;
+    background: #d9d4c9;
+    position: relative;
+    overflow: hidden;
+    border: 3px solid var(--bg);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .author-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .author-photo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #9a9285;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+
+  .author-name {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .author-role {
+    font-size: 14px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+  }
+
+  .author-contacts {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .author-contacts li {
+    font-size: 15px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .author-contacts li svg {
+    width: 16px; height: 16px;
+    stroke: var(--accent); fill: none;
+    stroke-width: 2; stroke-linecap: round;
+    flex-shrink: 0;
+  }
+  .author-contacts a {
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+  .author-contacts a:hover {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .author-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background: var(--text);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 6px;
+    transition: background 0.2s ease;
+  }
+  .author-btn:hover { background: var(--accent); }
+
+  /* ===== О ПРОЕКТЕ ===== */
+  .about-section {
+    margin-top: 40px;
+    animation: fadeIn 0.8s ease 0.6s both;
+  }
+
+  .about-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .about-header h2 {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .about-block {
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 30px 34px;
+    margin-bottom: 24px;
+    line-height: 1.75;
+    font-size: 16px;
+    color: #333;
+  }
+  .about-block h3 {
+    font-size: 18px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .about-block p + p { margin-top: 12px; }
+  .about-block strong { color: var(--text); font-weight: 700; }
+
+  /* ===== АДАПТИВ ===== */
+  @media (max-width: 768px) {
+    .site-title { font-size: 16px; letter-spacing: 2px; }
+
+    main { padding: 110px 18px 60px 18px; }
+
+    .authors {
+      grid-template-columns: 1fr;
+      gap: 22px;
+      margin-bottom: 60px;
+    }
+
+    .page-subtitle { margin-bottom: 40px; }
+    .divider { margin-bottom: 40px; }
+
+    .author-card { padding: 28px 20px; }
+    .author-photo { width: 110px; height: 110px; }
+
+    .about-block { padding: 22px 20px; font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ===== ШАПКА ===== -->
+  <header>
+    <button class="burger" id="burger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+
+    <div class="site-title"><!-- ВСТАВЬ НАЗВАНИЕ -->Название</div>
+
+    <button class="search-btn" id="searchBtn" aria-label="Поиск">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+    </button>
+  </header>
+
+  <!-- ===== ШТОРКА ===== -->
+  <aside class="drawer" id="drawer">
+    <nav>
+      <a href="#">9й класс</a>
+      <a href="#">8й класс</a>
+      <a href="#">7й класс</a>
+      <a href="#">6й класс</a>
+      <a href="#">5й класс</a>
+    </nav>
+    <div class="contacts">
+      <a href="contacts.html">Контакты</a>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <!-- ===== ПОИСК ===== -->
+  <div class="search-modal" id="searchModal">
+    <div class="search-box">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input type="text" placeholder="Поиск по сайту..." id="searchInput" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- ===== КОНТЕНТ ===== -->
+  <main>
+    <h1 class="page-title">Контакты</h1>
+    <p class="page-subtitle">Авторы проекта</p>
+    <div class="divider"></div>
+
+    <!-- Карточки авторов -->
+    <section class="authors">
+
+      <!-- Оля -->
+      <article class="author-card">
+        <div class="author-photo">
+          <img src="https://sun9-51.vkuserphoto.ru/s/v1/ig2/OfvdcmdDjv5jDMFxU8wsprLmOIptNttmMGHydAxT3CQ9u4srvou9XZo2daaiWoZ7LQ_muHgdNzD23svbVknRW-ZD.jpg?quality=95&as=32x74,48x111,72x167,108x250,160x371,240x557,360x835,480x1113,540x1252,552x1280&from=bu&u=Qdv9-oTrae0ocxfkrnYt8sjfyKuVdxB6uZJScbJ2BmI&cs=552x0" alt="Егорушкина Оля">
+        </div>
+        <h2 class="author-name">Егорушкина Оля</h2>
+        <p class="author-role">Автор проекта</p>
+
+        <ul class="author-contacts">
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 6l8 6 8-6"/></svg>
+            <a href="mailto:olya@example.com">olya@gmail.com.com</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M22 4L2 12l6 2 2 6 4-5 6 4z"/></svg>
+            <a href="#">@olivka_eeeee</a>
+          </li>
+        </ul>
+
+        <a href="mailto:olya@example.com" class="author-btn">Написать</a>
+      </article>
+
+      <!-- Сергей -->
+      <article class="author-card">
+        <div class="author-photo">
+         <img src="https://sun9-53.vkuserphoto.ru/s/v1/ig2/U_pczDQYMcBzEjkPZXl4G-8SVrr1oMyITG8scJFNgciG50hg8oOenPR-00VNuWd4K7JdvQXVMT54P6ljRuhkl2Z9.jpg?quality=95&as=32x43,48x64,72x96,108x144,160x213,240x320,360x480,480x640,540x720,640x853,720x960,960x1280&from=bu&cs=960x0" alt="Федоров Сергей"> 
+        </div>
+        <h2 class="author-name">Федоров Сергей</h2>
+        <p class="author-role">Автор проекта</p>
+
+        <ul class="author-contacts">
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 6l8 6 8-6"/></svg>
+            <a href="mailto:cukcukene@gmail.com">cukcukene@gmail.com</a>
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M22 4L2 12l6 2 2 6 4-5 6 4z"/></svg>
+            <a href="#">@wertyt2332</a>
+          </li>
+        </ul>
+
+        <a href="mailto:cukcukene@gmail.com" class="author-btn">Написать</a>
+      </article>
+
+    </section>
+
+    <!-- О проекте -->
+    <section class="about-section">
+      <div class="about-header">
+        <h2>О проекте</h2>
+        <div class="divider"></div>
+      </div>
+
+      <div class="about-block">
+        <h3></h3>
+        <p>
+          <strong>Актуальность.</strong> Современное образование переживает этап цифровой
+          трансформации. Сегодняшние школьники (поколение Z и Alpha) являются «цифровыми
+          аборигенами» — они привыкли получать информацию через гаджеты и интернет. Однако
+          существующие образовательные онлайн-платформы часто либо узкоспециализированы
+          (подготовка к ЕГЭ), либо предлагают обезличенное тестирование, которое не всегда
+          учитывает специфику литературного анализа, где важен не только факт запоминания
+          сюжета, но и понимание авторской позиции.
+        </p>
+        <p>
+          <strong>Проблема.</strong> Проблема заключается в отсутствии специализированного,
+          эргономичного веб-ресурса, который бы сочетал в себе полноту охвата литературного
+          материала 10 класса и максимально простой, интуитивно понятный интерфейс, доступный
+          для использования с любых устройств (смартфонов, планшетов, ПК).
+        </p>
+        <p>
+          <strong>Цель.</strong> Разработка веб-сайта по литературным произведениям из школьной программы.
+        </p>
+        <p>
+          <strong>Задачи.</strong>
+          <ul>
+            <li> Провести анализ поколений, к которым относятся школьники. Выявить, что им нравится в оформлении сайтов.</li>
+            <li> Провести опрос среди школьников и узнать их предпочтения в оформлении сайта.</li>
+            <li> Создать веб-сайт.</li>
+            <li> Проверить работу сайта на практике (договориться с учителями и попросить применить в учебных целях).</li>
+            <li> Попросить целевую аудиторию оставить отзыв по выполненной работе.</li>
+            <li> Ознакомиться с отзывами.</li>
+          </ul>
+        </p>
+        <p>
+          <strong>Объект исследования.</strong> Литературные произведения.
+        </p> 
+        <p> 
+          <strong>Предмет исследования.</strong> Литературные произведения из программы  класса.
+        </p>
+        <p>
+          <strong>Методы.</strong> Анализ, опрос, моделирования. 
+        </p>
+
+      </div>
+    </section>
+  </main>
+
+<script>
+  const burger      = document.getElementById('burger');
+  const drawer      = document.getElementById('drawer');
+  const overlay     = document.getElementById('overlay');
+  const searchBtn   = document.getElementById('searchBtn');
+  const searchModal = document.getElementById('searchModal');
+  const searchInput = document.getElementById('searchInput');
+
+  function openDrawer() {
+    drawer.classList.add('open');
+    overlay.classList.add('show');
+    burger.classList.add('active');
+  }
+  function closeDrawer() {
+    drawer.classList.remove('open');
+    overlay.classList.remove('show');
+    burger.classList.remove('active');
+  }
+  burger.addEventListener('click', () => {
+    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
+  });
+  overlay.addEventListener('click', closeDrawer);
+
+  function openSearch() {
+    searchModal.classList.add('show');
+    setTimeout(() => searchInput.focus(), 150);
+  }
+  function closeSearch() {
+    searchModal.classList.remove('show');
+    searchInput.value = '';
+  }
+  searchBtn.addEventListener('click', openSearch);
+  searchModal.addEventListener('click', (e) => {
+    if (e.target === searchModal) closeSearch();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeDrawer(); closeSearch(); }
+  });
+</script>
+
+</body>
+</html>
