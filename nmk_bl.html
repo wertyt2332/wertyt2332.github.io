@@ -150,7 +150,10 @@
   }
   .author-btn:hover { color: var(--accent); padding-left: 54px; background: rgba(0, 0, 0, 0.02); }
   .author-btn:hover::before { background: var(--accent); transform: translateY(-50%) scale(1); }
-  .author-block.open > .author-btn { color: var(--accent); font-weight: 600; background: rgba(138, 109, 59, 0.05); }
+  .author-block.open > .author-btn {
+    color: var(--accent); font-weight: 600;
+    background: rgba(138, 109, 59, 0.05);
+  }
   .author-block.open > .author-btn::before { background: var(--accent); transform: translateY(-50%) scale(1); }
 
   .author-body {
@@ -214,23 +217,32 @@
     padding: 130px 24px 80px 24px;
     max-width: 900px;
     margin: 0 auto;
+    overflow-x: hidden;
   }
 
-  .article-header { text-align: center; margin-bottom: 50px; animation: fadeUp 0.9s var(--ease) 0.1s both; }
+  .article-header {
+    text-align: center;
+    margin-bottom: 50px;
+    animation: fadeUp 0.9s var(--ease) 0.1s both;
+  }
   .article-author {
     font-size: 15px; letter-spacing: 3px;
     text-transform: uppercase; color: var(--muted);
     margin-bottom: 12px;
   }
   .article-title {
-    font-size: clamp(40px, 8vw, 88px);
-    font-weight: 700; letter-spacing: 4px;
+    font-size: clamp(32px, 6vw, 64px);
+    font-weight: 700;
+    letter-spacing: 3px;
     margin-bottom: 16px;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
     animation: titleIn 1s var(--ease) 0.2s both;
   }
   @keyframes titleIn {
-    from { opacity: 0; transform: translateY(20px); letter-spacing: 10px; }
-    to   { opacity: 1; transform: translateY(0); letter-spacing: 4px; }
+    from { opacity: 0; }
+    to   { opacity: 1; }
   }
   .article-meta {
     color: var(--muted); font-size: 15px;
@@ -289,9 +301,14 @@
   .section-block.open > .section-btn::after { content: "−"; color: var(--accent); }
 
   .section-body {
-    max-height: 0; overflow: hidden;
+    max-height: 0;
+    overflow: hidden;
     padding: 0 28px;
-    line-height: 1.75; font-size: 16px; color: #333;
+    line-height: 1.75;
+    font-size: 16px;
+    color: #333;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
     transition: max-height 0.5s var(--ease), padding 0.4s var(--ease);
   }
   .section-block.open > .section-body {
@@ -344,6 +361,9 @@
     border-radius: 10px;
     padding: 24px 28px;
     margin-bottom: 18px;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
     transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
   }
   .quiz-question.correct { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-bg); }
@@ -354,16 +374,34 @@
     letter-spacing: 2px; text-transform: uppercase;
     margin-bottom: 6px;
   }
-  .quiz-q-text { font-size: 17px; font-weight: 600; margin-bottom: 16px; line-height: 1.4; }
+  .quiz-q-text {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  }
 
   .quiz-options { display: flex; flex-direction: column; gap: 8px; }
   .quiz-option {
-    display: flex; align-items: center; gap: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
     padding: 12px 16px;
     border: 1px solid var(--border);
     border-radius: 6px;
     cursor: pointer;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
     transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .quiz-option > span:last-child {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
   }
   .quiz-option:hover { background: var(--bg); border-color: var(--accent); }
   .quiz-option input { display: none; }
@@ -425,11 +463,17 @@
   /* ===== АДАПТИВ ===== */
   @media (max-width: 768px) {
     .site-title { font-size: 16px; letter-spacing: 2px; }
-    main.article-page { padding: 110px 18px 60px 18px; }
+
+    main.article-page { padding: 100px 18px 60px 18px; }
+    .article-title {
+      font-size: clamp(28px, 8vw, 44px);
+      letter-spacing: 2px;
+    }
+    .quiz-question { padding: 18px 16px; }
+
     .section-btn { padding: 16px 20px; font-size: 16px; }
     .section-block.open > .section-body { padding: 4px 20px 20px 20px; }
     .section-body { font-size: 15px; padding: 0 20px; }
-    .quiz-question { padding: 20px; }
     .quiz-q-text { font-size: 16px; }
     .quiz-option { padding: 10px 12px; font-size: 15px; }
   }
