@@ -5,7 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Бедная Лиза — Н.М. Карамзин</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
   :root {
     --bg: #f7f5f0;
     --text: #1c1c1c;
@@ -14,11 +21,13 @@
     --border: #e0dcd3;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
     --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --header-h: 70px;
     --green: #2e7d32;
     --green-bg: #e8f5e9;
     --red: #c62828;
     --red-bg: #ffebee;
   }
+
   html, body { height: 100%; }
   body {
     font-family: "Georgia", "Times New Roman", serif;
@@ -31,10 +40,10 @@
   /* ===== ШАПКА ===== */
   header {
     position: fixed; top: 0; left: 0; right: 0;
-    height: 70px;
+    height: var(--header-h);
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 24px;
-    background: rgba(247, 245, 240, 0.85);
+    background: rgba(247, 245, 240, 0.9);
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--border);
     z-index: 100;
@@ -62,17 +71,18 @@
     letter-spacing: 1px; text-transform: uppercase;
     cursor: pointer; user-select: none;
     color: var(--text); text-decoration: none;
-    transition: color 0.25s var(--ease), letter-spacing 0.3s var(--ease);
+    transition: color 0.25s var(--ease);
+    white-space: nowrap;
   }
-  .site-title:hover { color: var(--accent); letter-spacing: 2px; }
+  .site-title:hover { color: var(--accent); }
 
   .home-btn {
     width: 42px; height: 42px;
     border: none; background: transparent; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
-    border-radius: 6px;
-    color: var(--text); text-decoration: none;
+    border-radius: 6px; color: var(--text); text-decoration: none;
     transition: background 0.25s var(--ease), transform 0.25s var(--ease);
+    flex-shrink: 0;
   }
   .home-btn:hover { background: rgba(0, 0, 0, 0.05); transform: scale(1.08); }
   .home-btn:active { transform: scale(0.94); }
@@ -94,16 +104,14 @@
     transition: transform 0.4s var(--ease);
     z-index: 200;
     display: flex; flex-direction: column;
-    padding: 90px 0 24px 0;
+    padding: calc(var(--header-h) + 20px) 0 24px 0;
   }
   .drawer.open { transform: translateX(0); }
   .drawer nav { flex: 1; overflow-y: auto; padding-bottom: 12px; }
 
   .class-block { position: relative; }
   .class-btn {
-    width: 100%;
-    display: block;
-    padding: 18px 32px;
+    width: 100%; display: block; padding: 18px 32px;
     background: none; border: none; cursor: pointer;
     font-family: inherit; font-size: 18px; color: var(--text);
     text-align: left; position: relative;
@@ -123,17 +131,14 @@
   .class-block.open > .class-btn { color: var(--accent); background: var(--bg); }
 
   .class-body {
-    max-height: 0; overflow: hidden;
-    background: #fbfaf7;
+    max-height: 0; overflow: hidden; background: #fbfaf7;
     transition: max-height 0.45s var(--ease);
   }
   .class-block.open > .class-body { max-height: 3000px; }
 
   .author-block { position: relative; }
   .author-btn {
-    width: 100%;
-    display: block;
-    padding: 13px 24px 13px 46px;
+    width: 100%; display: block; padding: 13px 24px 13px 46px;
     background: none; border: none; cursor: pointer;
     font-family: inherit; font-size: 16px; color: var(--muted);
     text-align: left;
@@ -150,22 +155,17 @@
   }
   .author-btn:hover { color: var(--accent); padding-left: 54px; background: rgba(0, 0, 0, 0.02); }
   .author-btn:hover::before { background: var(--accent); transform: translateY(-50%) scale(1); }
-  .author-block.open > .author-btn {
-    color: var(--accent); font-weight: 600;
-    background: rgba(138, 109, 59, 0.05);
-  }
+  .author-block.open > .author-btn { color: var(--accent); font-weight: 600; background: rgba(138, 109, 59, 0.05); }
   .author-block.open > .author-btn::before { background: var(--accent); transform: translateY(-50%) scale(1); }
 
   .author-body {
-    max-height: 0; overflow: hidden;
-    background: #ffffff;
+    max-height: 0; overflow: hidden; background: #ffffff;
     transition: max-height 0.4s var(--ease);
   }
   .author-block.open > .author-body { max-height: 1000px; }
 
   .work-link {
-    display: block;
-    padding: 10px 24px 10px 66px;
+    display: block; padding: 10px 24px 10px 66px;
     font-size: 15px; color: var(--text);
     text-decoration: none; position: relative;
     transition: color 0.25s var(--ease), background 0.25s var(--ease), padding-left 0.3s var(--ease);
@@ -180,9 +180,7 @@
   .work-link:hover::before { width: 12px; background: var(--accent); }
 
   .all-program {
-    display: block;
-    margin: 14px 24px 18px 32px;
-    padding: 13px 16px;
+    display: block; margin: 14px 24px 18px 32px; padding: 13px 16px;
     background: var(--text); color: #fff;
     font-size: 12px; letter-spacing: 1.4px;
     text-transform: uppercase; text-align: center;
@@ -214,30 +212,37 @@
 
   /* ===== КОНТЕНТ СТАТЬИ ===== */
   main.article-page {
-    padding: 130px 24px 80px 24px;
+    padding: calc(var(--header-h) + 40px) 20px 80px 20px;
     max-width: 900px;
     margin: 0 auto;
+    width: 100%;
     overflow-x: hidden;
   }
 
   .article-header {
     text-align: center;
-    margin-bottom: 50px;
+    margin-bottom: 40px;
     animation: fadeUp 0.9s var(--ease) 0.1s both;
+    padding: 0 4px;
   }
   .article-author {
-    font-size: 15px; letter-spacing: 3px;
-    text-transform: uppercase; color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
     margin-bottom: 12px;
+    overflow-wrap: anywhere;
   }
   .article-title {
-    font-size: clamp(32px, 6vw, 64px);
+    font-size: clamp(26px, 5.5vw, 52px);
     font-weight: 700;
-    letter-spacing: 3px;
-    margin-bottom: 16px;
+    letter-spacing: 0;
+    line-height: 1.15;
+    margin: 0 auto 14px auto;
     max-width: 100%;
     overflow-wrap: break-word;
-    word-break: break-word;
+    word-break: normal;
+    hyphens: auto;
     animation: titleIn 1s var(--ease) 0.2s both;
   }
   @keyframes titleIn {
@@ -245,20 +250,27 @@
     to   { opacity: 1; }
   }
   .article-meta {
-    color: var(--muted); font-size: 15px;
-    letter-spacing: 1.5px; margin-bottom: 30px;
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 26px;
+    overflow-wrap: anywhere;
+    padding: 0 4px;
   }
   .divider {
     width: 60px; height: 2px;
     background: var(--accent);
-    margin: 0 auto 50px auto;
+    margin: 0 auto 40px auto;
     animation: dividerGrow 0.8s var(--ease) 0.4s both;
   }
   @keyframes dividerGrow { from { width: 0; } to { width: 60px; } }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
   /* ===== АККОРДЕОНЫ РАЗДЕЛОВ ===== */
-  .article-sections { display: flex; flex-direction: column; gap: 10px; }
+  .article-sections {
+    display: flex; flex-direction: column; gap: 10px;
+    width: 100%;
+  }
 
   .section-block {
     background: #fff;
@@ -267,6 +279,7 @@
     overflow: hidden;
     animation: fadeUp 0.7s var(--ease) both;
     transition: box-shadow 0.3s var(--ease);
+    width: 100%;
   }
   .section-block:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
   .section-block:nth-child(1) { animation-delay: 0.3s; }
@@ -285,17 +298,23 @@
   .section-btn {
     width: 100%;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 28px;
+    gap: 12px;
+    padding: 18px 24px;
     background: none; border: none; cursor: pointer;
-    font-family: inherit; font-size: 18px; font-weight: 600;
+    font-family: inherit; font-size: 17px; font-weight: 600;
     color: var(--text); text-align: left;
     transition: background 0.3s var(--ease), color 0.3s var(--ease);
+    overflow-wrap: anywhere;
   }
+  .section-btn > span,
+  .section-btn > :first-child { flex: 1; min-width: 0; }
   .section-btn:hover { background: var(--bg); color: var(--accent); }
   .section-btn::after {
     content: "+";
     font-size: 22px; color: var(--muted); font-weight: 400;
     transition: color 0.3s var(--ease);
+    flex-shrink: 0;
+    line-height: 1;
   }
   .section-block.open > .section-btn { color: var(--accent); background: var(--bg); }
   .section-block.open > .section-btn::after { content: "−"; color: var(--accent); }
@@ -303,29 +322,30 @@
   .section-body {
     max-height: 0;
     overflow: hidden;
-    padding: 0 28px;
+    padding: 0 24px;
     line-height: 1.75;
     font-size: 16px;
     color: #333;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     word-wrap: break-word;
     transition: max-height 0.5s var(--ease), padding 0.4s var(--ease);
   }
   .section-block.open > .section-body {
     max-height: 4000px;
-    padding: 4px 28px 24px 28px;
+    padding: 4px 24px 22px 24px;
   }
   .section-body p + p { margin-top: 12px; }
   .section-body strong { color: var(--text); }
   .section-body ul { margin: 10px 0 10px 20px; }
   .section-body li { margin-bottom: 8px; }
   .section-body h4 {
-    color: var(--accent); font-size: 16px;
+    color: var(--accent); font-size: 15px;
     letter-spacing: 1px; text-transform: uppercase;
     margin: 16px 0 8px 0; font-weight: 600;
   }
   .section-body h4:first-child { margin-top: 0; }
   .section-body .quote {
+    display: block;
     border-left: 3px solid var(--accent);
     padding-left: 16px; margin: 12px 0;
     color: #555; font-style: italic;
@@ -335,72 +355,85 @@
     border-radius: 8px;
     padding: 16px 20px;
     margin-bottom: 12px;
+    overflow-wrap: anywhere;
   }
   .section-body .hero-card:last-child { margin-bottom: 0; }
   .section-body .hero-card h4 { margin-top: 0; }
 
   /* ===== ТЕСТ ===== */
   .test-section {
-    margin-top: 70px;
-    padding-top: 40px;
+    margin-top: 60px;
+    padding-top: 36px;
     border-top: 1px solid var(--border);
     animation: fadeUp 0.9s var(--ease) 0.9s both;
+    width: 100%;
   }
-  .test-header { text-align: center; margin-bottom: 40px; }
+  .test-header { text-align: center; margin-bottom: 32px; }
   .test-title {
-    font-size: clamp(24px, 4vw, 36px);
-    font-weight: 700; letter-spacing: 3px;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700; letter-spacing: 2px;
     text-transform: uppercase;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
   }
-  .test-subtitle { color: var(--muted); font-size: 15px; letter-spacing: 1px; }
+  .test-subtitle {
+    color: var(--muted); font-size: 14px;
+    letter-spacing: 1px;
+    overflow-wrap: anywhere;
+  }
 
   .quiz-question {
     background: #fff;
     border: 1px solid var(--border);
     border-radius: 10px;
-    padding: 24px 28px;
-    margin-bottom: 18px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
     overflow: hidden;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     word-wrap: break-word;
+    width: 100%;
     transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
   }
   .quiz-question.correct { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-bg); }
   .quiz-question.incorrect { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-bg); }
 
   .quiz-q-num {
-    font-size: 13px; color: var(--accent);
+    font-size: 12px; color: var(--accent);
     letter-spacing: 2px; text-transform: uppercase;
     margin-bottom: 6px;
+    overflow-wrap: anywhere;
   }
   .quiz-q-text {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 600;
-    margin-bottom: 16px;
-    line-height: 1.4;
-    overflow-wrap: break-word;
+    margin-bottom: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
     word-wrap: break-word;
   }
 
-  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-options {
+    display: flex; flex-direction: column; gap: 8px;
+    width: 100%;
+  }
   .quiz-option {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 12px 14px;
     border: 1px solid var(--border);
     border-radius: 6px;
     cursor: pointer;
+    width: 100%;
     min-width: 0;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     word-wrap: break-word;
     transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
   }
   .quiz-option > span:last-child {
     flex: 1;
     min-width: 0;
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
     word-wrap: break-word;
   }
   .quiz-option:hover { background: var(--bg); border-color: var(--accent); }
@@ -409,7 +442,9 @@
     width: 18px; height: 18px;
     border: 2px solid var(--muted);
     border-radius: 50%;
-    flex-shrink: 0; position: relative;
+    flex-shrink: 0;
+    position: relative;
+    margin-top: 2px;
     transition: border-color 0.2s var(--ease);
   }
   .quiz-option.selected { background: rgba(138,109,59,0.08); border-color: var(--accent); }
@@ -426,56 +461,53 @@
   .quiz-option.incorrect .radio { border-color: var(--red); }
   .quiz-option.incorrect .radio::after { background: var(--red); }
   .quiz-option.disabled { cursor: default; }
-  .quiz-option.disabled:hover { background: inherit; }
 
   .quiz-actions {
     display: flex; gap: 12px; justify-content: center;
-    margin-top: 32px; flex-wrap: wrap;
+    margin-top: 28px; flex-wrap: wrap;
   }
   .quiz-btn {
-    padding: 14px 32px;
+    padding: 13px 28px;
     border: none; border-radius: 8px;
     font-family: inherit; font-size: 14px;
     letter-spacing: 1.5px; text-transform: uppercase;
     cursor: pointer;
-    transition: background 0.3s var(--ease), transform 0.2s var(--ease), letter-spacing 0.3s var(--ease);
+    transition: background 0.3s var(--ease), transform 0.2s var(--ease);
   }
   .quiz-btn-primary { background: var(--text); color: #fff; }
-  .quiz-btn-primary:hover { background: var(--accent); letter-spacing: 1.9px; transform: translateY(-2px); }
+  .quiz-btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
   .quiz-btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
   .quiz-btn-secondary:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
 
   .quiz-result {
     margin-top: 24px;
-    padding: 20px 24px;
+    padding: 18px 22px;
     border-radius: 10px;
     text-align: center;
-    font-size: 18px; font-weight: 600;
+    font-size: 17px; font-weight: 600;
     opacity: 0; transform: translateY(-6px);
     transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+    overflow-wrap: anywhere;
   }
   .quiz-result.show { opacity: 1; transform: translateY(0); }
   .quiz-result.good { background: var(--green-bg); color: var(--green); }
   .quiz-result.mid  { background: #fff8e1; color: #b26a00; }
   .quiz-result.bad  { background: var(--red-bg); color: var(--red); }
-  .quiz-result small { display: block; font-size: 14px; font-weight: 400; margin-top: 4px; opacity: 0.85; }
+  .quiz-result small { display: block; font-size: 13px; font-weight: 400; margin-top: 4px; opacity: 0.85; }
 
   /* ===== АДАПТИВ ===== */
   @media (max-width: 768px) {
-    .site-title { font-size: 16px; letter-spacing: 2px; }
-
-    main.article-page { padding: 100px 18px 60px 18px; }
-    .article-title {
-      font-size: clamp(28px, 8vw, 44px);
-      letter-spacing: 2px;
-    }
+    .site-title { font-size: 15px; letter-spacing: 1px; }
+    main.article-page { padding: calc(var(--header-h) + 28px) 16px 60px 16px; }
+    .article-title { font-size: clamp(24px, 7vw, 38px); }
+    .article-meta { font-size: 13px; letter-spacing: 0.5px; }
+    .section-btn { padding: 16px 18px; font-size: 16px; }
+    .section-block.open > .section-body { padding: 4px 18px 18px 18px; }
+    .section-body { font-size: 15px; padding: 0 18px; }
     .quiz-question { padding: 18px 16px; }
-
-    .section-btn { padding: 16px 20px; font-size: 16px; }
-    .section-block.open > .section-body { padding: 4px 20px 20px 20px; }
-    .section-body { font-size: 15px; padding: 0 20px; }
-    .quiz-q-text { font-size: 16px; }
-    .quiz-option { padding: 10px 12px; font-size: 15px; }
+    .quiz-q-text { font-size: 15px; }
+    .quiz-option { padding: 10px 12px; font-size: 14px; gap: 10px; }
+    .test-title { letter-spacing: 1px; }
   }
 </style>
 </head>
@@ -511,7 +543,7 @@
     <section class="article-sections">
 
       <div class="section-block">
-        <button class="section-btn">Жанр</button>
+        <button class="section-btn"><span>Жанр</span></button>
         <div class="section-body">
           <p><strong>Повесть.</strong> «Бедная Лиза» традиционно определяется как повесть — небольшое прозаическое произведение с динамичным сюжетом и трагической развязкой. Однако исследователи отмечают в ней черты и других жанров:</p>
           <ul>
@@ -523,7 +555,7 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Направление: Сентиментализм</button>
+        <button class="section-btn"><span>Направление: Сентиментализм</span></button>
         <div class="section-body">
           <p>Это основное и самое важное определение. Карамзин впервые в русской литературе сделал главным объектом изображения <strong>внутренний мир человека</strong>, его чувства и переживания, а не гражданский долг или разум.</p>
           <ul>
@@ -534,14 +566,14 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Род литературы</button>
+        <button class="section-btn"><span>Род литературы</span></button>
         <div class="section-body">
           <p>«Бедная Лиза» относится к <strong>эпосу</strong> (точнее, к эпическому роду литературы), так как представляет собой прозаическое повествование о событиях, происходящих с персонажами во времени, с наличием рассказчика.</p>
         </div>
       </div>
 
       <div class="section-block">
-        <button class="section-btn">История создания</button>
+        <button class="section-btn"><span>История создания</span></button>
         <div class="section-body">
           <p>В 1789–1790 годах Карамзин отправился в поездку по Германии, Англии, Франции и Швейцарии. Он стал свидетелем Великой французской революции и познакомился с идеями Просвещения. Вернувшись, он привёз не только впечатления (позже легшие в основу «Писем русского путешественника»), но и убеждение, что литературе нужен новый язык — близкий к разговорному, свободный от церковнославянской тяжеловесности.</p>
           <p>Повесть была написана в <strong>1792 году</strong> и опубликована в «Московском журнале», который Карамзин сам издавал. Через четыре года (в 1796-м) она вышла отдельной книгой.</p>
@@ -551,14 +583,14 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Краткое содержание</button>
+        <button class="section-btn"><span>Краткое содержание</span></button>
         <div class="section-body">
           <p>Крестьянка Лиза влюбляется в дворянина Эраста. Он клянётся в вечной любви, но после близости охладевает и женится на богатой невесте. Лиза, не вынеся предательства, топится в пруду. Мать умирает от горя. Эраст до конца жизни считает себя убийцей.</p>
         </div>
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Подробное содержание</button>
+        <button class="section-btn"><span>Подробное содержание</span></button>
         <div class="section-body">
           <p>Повествование ведётся от лица автора-рассказчика. Он гуляет по окрестностям Москвы, любуется видом на Симонов монастырь и вспоминает историю, случившуюся «лет за тридцать до сего времени». Именно здесь, у берёзовой рощи и пруда, жила бедная Лиза.</p>
           <p>Лиза — крестьянская девушка, живёт с матерью в хижине. После смерти отца (зажиточного крестьянина) они обеднели. Лиза, чтобы прокормить мать, продаёт в городе ландыши и вязаные чулки. Мать мечтает выдать дочь замуж за крестьянина, но Лиза отвечает, что не пойдёт за богатого.</p>
@@ -571,7 +603,7 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Герои</button>
+        <button class="section-btn"><span>Герои</span></button>
         <div class="section-body">
           <div class="hero-card">
             <h4>Лиза</h4>
@@ -593,7 +625,7 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Конфликты</button>
+        <button class="section-btn"><span>Конфликты</span></button>
         <div class="section-body">
           <h4>Социальный конфликт</h4>
           <p>Это столкновение сословного неравенства: крестьянка Лиза и дворянин Эраст.</p>
@@ -613,7 +645,7 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Проблемы</button>
+        <button class="section-btn"><span>Проблемы</span></button>
         <div class="section-body">
           <ul>
             <li><strong>Сословное неравенство:</strong> непреодолимая пропасть между крестьянкой и дворянином.</li>
@@ -633,7 +665,7 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Важные детали</button>
+        <button class="section-btn"><span>Важные детали</span></button>
         <div class="section-body">
           <h4>Ландыши</h4>
           <p>Символ чистоты и хрупкости. Когда Эраст впервые встречает Лизу, он предлагает за букет рубль вместо пяти копеек, но Лиза отказывается от лишнего, подчёркивая свою честность. Позже, не найдя Эраста, она бросает цветы в реку — жест, означающий, что она не может отдать предназначенное одному человеку другому.</p>
@@ -649,7 +681,7 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Интересные факты</button>
+        <button class="section-btn"><span>Интересные факты</span></button>
         <div class="section-body">
           <h4>«Лизин пруд» и паломничество читателей</h4>
           <p>Повесть произвела эффект, сравнимый с «эффектом Вертера»: впечатлительные читатели устремились к пруду у Симонова монастыря, который стали называть «Лизиным». Одна из сохранившихся эпиграмм: <span class="quote">«Здесь бросилася в пруд Эрастова невеста. Топитесь, девушки: в пруду довольно места!»</span></p>
@@ -667,7 +699,7 @@
       </div>
 
       <div class="section-block">
-        <button class="section-btn">Темы на ЕГЭ</button>
+        <button class="section-btn"><span>Темы на ЕГЭ</span></button>
         <div class="section-body">
           <ul>
             <li><strong>«И крестьянки любить умеют»:</strong> образ Лизы и его роль в раскрытии авторского замысла. Лиза как «естественный человек», её нравственная чистота, сила чувства, трагизм положения женщины из низшего сословия.</li>
@@ -791,18 +823,14 @@ function buildMenu() {
   });
 }
 
-/* ===== Аккордеоны разделов ===== */
 function initSections() {
   document.querySelectorAll('.section-block').forEach(block => {
     const btn = block.querySelector('.section-btn');
     if (!btn) return;
-    btn.addEventListener('click', () => {
-      block.classList.toggle('open');
-    });
+    btn.addEventListener('click', () => block.classList.toggle('open'));
   });
 }
 
-/* ===== ТЕСТ ===== */
 const QUIZ = [
   { q: "К какому литературному направлению относится «Бедная Лиза»?",
     options: ["Классицизм", "Сентиментализм", "Романтизм", "Реализм"], correct: 1 },
@@ -862,31 +890,19 @@ function checkQuiz() {
     const correctIdx = QUIZ[qi].correct;
     qBlock.classList.remove('correct', 'incorrect');
     qBlock.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('correct', 'incorrect'));
-
     const correctOpt = qBlock.querySelector(`.quiz-option[data-o="${correctIdx}"]`);
     correctOpt.classList.add('correct');
-
     if (selected) {
       const selectedIdx = parseInt(selected.dataset.o);
-      if (selectedIdx === correctIdx) {
-        correctCount++;
-        qBlock.classList.add('correct');
-      } else {
-        selected.classList.add('incorrect');
-        qBlock.classList.add('incorrect');
-      }
-    } else {
-      qBlock.classList.add('incorrect');
-    }
-
+      if (selectedIdx === correctIdx) { correctCount++; qBlock.classList.add('correct'); }
+      else { selected.classList.add('incorrect'); qBlock.classList.add('incorrect'); }
+    } else { qBlock.classList.add('incorrect'); }
     qBlock.querySelectorAll('.quiz-option').forEach(o => o.classList.add('disabled'));
   });
-
   const result = document.getElementById('quizResult');
   result.classList.remove('good', 'mid', 'bad');
   result.classList.add('show');
   const score = Math.round((correctCount / QUIZ.length) * 100);
-
   if (correctCount >= 8) {
     result.classList.add('good');
     result.innerHTML = `Отлично! Правильных ответов: ${correctCount} из ${QUIZ.length} (${score}%)<small>Ты отлично знаешь повесть.</small>`;
@@ -913,7 +929,6 @@ function resetQuiz() {
   document.querySelector('.test-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ===== Общая логика ===== */
 document.addEventListener('DOMContentLoaded', () => {
   buildMenu();
   initSections();
