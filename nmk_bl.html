@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бедная Лиза — Н.М. Карамзин</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg: #f7f5f0;
+    --text: #1c1c1c;
+    --muted: #6b6b6b;
+    --accent: #8a6d3b;
+    --border: #e0dcd3;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+  }
+  html, body { height: 100%; }
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: var(--bg); color: var(--text);
+    overflow-x: hidden;
+    animation: pageFadeIn 0.6s ease both;
+  }
+  @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ===== ШАПКА ===== */
+  header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 70px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(247, 245, 240, 0.85);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .burger {
+    width: 42px; height: 42px;
+    border: none; background: transparent; cursor: pointer;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    gap: 5px; border-radius: 6px;
+    transition: background 0.25s var(--ease);
+  }
+  .burger:hover { background: rgba(0, 0, 0, 0.05); }
+  .burger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--text);
+    transition: transform 0.35s var(--ease), opacity 0.25s var(--ease);
+  }
+  .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.active span:nth-child(2) { opacity: 0; }
+  .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .site-title {
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    color: var(--text); text-decoration: none;
+    transition: color 0.25s var(--ease), letter-spacing 0.3s var(--ease);
+  }
+  .site-title:hover { color: var(--accent); letter-spacing: 2px; }
+
+  .home-btn {
+    width: 42px; height: 42px;
+    border: none; background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px;
+    color: var(--text); text-decoration: none;
+    transition: background 0.25s var(--ease), transform 0.25s var(--ease);
+  }
+  .home-btn:hover { background: rgba(0, 0, 0, 0.05); transform: scale(1.08); }
+  .home-btn:active { transform: scale(0.94); }
+  .home-btn svg {
+    width: 22px; height: 22px;
+    stroke: var(--text); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: stroke 0.25s var(--ease);
+  }
+  .home-btn:hover svg { stroke: var(--accent); }
+
+  /* ===== ШТОРКА ===== */
+  .drawer {
+    position: fixed; top: 0; left: 0;
+    width: 320px; max-width: 88vw; height: 100%;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+    transform: translateX(-100%);
+    transition: transform 0.4s var(--ease);
+    z-index: 200;
+    display: flex; flex-direction: column;
+    padding: 90px 0 24px 0;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer nav { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+
+  .class-block { position: relative; }
+  .class-btn {
+    width: 100%;
+    display: block;
+    padding: 18px 32px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 18px; color: var(--text);
+    text-align: left; position: relative;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.3s var(--ease), padding-left 0.35s var(--ease), background 0.3s var(--ease);
+  }
+  .class-btn::before {
+    content: ""; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent);
+    transform: scaleY(0); transform-origin: center;
+    transition: transform 0.35s var(--ease);
+  }
+  .class-btn:hover { color: var(--accent); padding-left: 42px; background: var(--bg); }
+  .class-btn:hover::before,
+  .class-block.open > .class-btn::before { transform: scaleY(1); }
+  .class-block.open > .class-btn { color: var(--accent); background: var(--bg); }
+
+  .class-body {
+    max-height: 0; overflow: hidden;
+    background: #fbfaf7;
+    transition: max-height 0.45s var(--ease);
+  }
+  .class-block.open > .class-body { max-height: 3000px; }
+
+  .author-block { position: relative; }
+  .author-btn {
+    width: 100%;
+    display: block;
+    padding: 13px 24px 13px 46px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 16px; color: var(--muted);
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: color 0.3s var(--ease), padding-left 0.35s var(--ease), background 0.3s var(--ease);
+  }
+  .author-btn::before {
+    content: ""; position: absolute;
+    left: 32px; top: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted);
+    transform: translateY(-50%) scale(0.7);
+    transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .author-btn:hover { color: var(--accent); padding-left: 54px; background: rgba(0, 0, 0, 0.02); }
+  .author-btn:hover::before { background: var(--accent); transform: translateY(-50%) scale(1); }
+  .author-block.open > .author-btn { color: var(--accent); font-weight: 600; background: rgba(138, 109, 59, 0.05); }
+  .author-block.open > .author-btn::before { background: var(--accent); transform: translateY(-50%) scale(1); }
+
+  .author-body {
+    max-height: 0; overflow: hidden;
+    background: #ffffff;
+    transition: max-height 0.4s var(--ease);
+  }
+  .author-block.open > .author-body { max-height: 1000px; }
+
+  .work-link {
+    display: block;
+    padding: 10px 24px 10px 66px;
+    font-size: 15px; color: var(--text);
+    text-decoration: none; position: relative;
+    transition: color 0.25s var(--ease), background 0.25s var(--ease), padding-left 0.3s var(--ease);
+  }
+  .work-link::before {
+    content: ""; position: absolute;
+    left: 50px; top: 50%;
+    width: 6px; height: 1px; background: var(--muted);
+    transition: width 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  .work-link:hover { color: var(--accent); background: rgba(138, 109, 59, 0.06); padding-left: 72px; }
+  .work-link:hover::before { width: 12px; background: var(--accent); }
+
+  .all-program {
+    display: block;
+    margin: 14px 24px 18px 32px;
+    padding: 13px 16px;
+    background: var(--text); color: #fff;
+    font-size: 12px; letter-spacing: 1.4px;
+    text-transform: uppercase; text-align: center;
+    text-decoration: none; border-radius: 6px;
+    transition: background 0.3s var(--ease), transform 0.25s var(--ease);
+  }
+  .all-program:hover { background: var(--accent); transform: translateY(-1px); }
+
+  .drawer .contacts { padding: 16px 24px 0 24px; border-top: 1px solid var(--border); }
+  .drawer .contacts a {
+    display: block; text-align: center; padding: 14px;
+    background: transparent; color: var(--text);
+    text-decoration: none; font-size: 15px;
+    letter-spacing: 1px; text-transform: uppercase;
+    border: 1px solid var(--border); border-radius: 6px;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .drawer .contacts a:hover { background: var(--bg); color: var(--accent); border-color: var(--accent); }
+
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.35s var(--ease), visibility 0.35s var(--ease);
+    z-index: 150;
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  }
+  .overlay.show { opacity: 1; visibility: visible; }
+
+  /* ===== КОНТЕНТ СТАТЬИ ===== */
+  main.article-page {
+    padding: 130px 24px 80px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .article-header { text-align: center; margin-bottom: 50px; animation: fadeUp 0.9s var(--ease) 0.1s both; }
+  .article-author {
+    font-size: 15px; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .article-title {
+    font-size: clamp(40px, 8vw, 88px);
+    font-weight: 700; letter-spacing: 4px;
+    margin-bottom: 16px;
+    animation: titleIn 1s var(--ease) 0.2s both;
+  }
+  @keyframes titleIn {
+    from { opacity: 0; transform: translateY(20px); letter-spacing: 10px; }
+    to   { opacity: 1; transform: translateY(0); letter-spacing: 4px; }
+  }
+  .article-meta {
+    color: var(--muted); font-size: 15px;
+    letter-spacing: 1.5px; margin-bottom: 30px;
+  }
+  .divider {
+    width: 60px; height: 2px;
+    background: var(--accent);
+    margin: 0 auto 50px auto;
+    animation: dividerGrow 0.8s var(--ease) 0.4s both;
+  }
+  @keyframes dividerGrow { from { width: 0; } to { width: 60px; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== АККОРДЕОНЫ РАЗДЕЛОВ ===== */
+  .article-sections { display: flex; flex-direction: column; gap: 10px; }
+
+  .section-block {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    animation: fadeUp 0.7s var(--ease) both;
+    transition: box-shadow 0.3s var(--ease);
+  }
+  .section-block:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+  .section-block:nth-child(1) { animation-delay: 0.3s; }
+  .section-block:nth-child(2) { animation-delay: 0.35s; }
+  .section-block:nth-child(3) { animation-delay: 0.4s; }
+  .section-block:nth-child(4) { animation-delay: 0.45s; }
+  .section-block:nth-child(5) { animation-delay: 0.5s; }
+  .section-block:nth-child(6) { animation-delay: 0.55s; }
+  .section-block:nth-child(7) { animation-delay: 0.6s; }
+  .section-block:nth-child(8) { animation-delay: 0.65s; }
+  .section-block:nth-child(9) { animation-delay: 0.7s; }
+  .section-block:nth-child(10) { animation-delay: 0.75s; }
+  .section-block:nth-child(11) { animation-delay: 0.8s; }
+  .section-block:nth-child(12) { animation-delay: 0.85s; }
+
+  .section-btn {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 28px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 18px; font-weight: 600;
+    color: var(--text); text-align: left;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease);
+  }
+  .section-btn:hover { background: var(--bg); color: var(--accent); }
+  .section-btn::after {
+    content: "+";
+    font-size: 22px; color: var(--muted); font-weight: 400;
+    transition: color 0.3s var(--ease);
+  }
+  .section-block.open > .section-btn { color: var(--accent); background: var(--bg); }
+  .section-block.open > .section-btn::after { content: "−"; color: var(--accent); }
+
+  .section-body {
+    max-height: 0; overflow: hidden;
+    padding: 0 28px;
+    line-height: 1.75; font-size: 16px; color: #333;
+    transition: max-height 0.5s var(--ease), padding 0.4s var(--ease);
+  }
+  .section-block.open > .section-body {
+    max-height: 4000px;
+    padding: 4px 28px 24px 28px;
+  }
+  .section-body p + p { margin-top: 12px; }
+  .section-body strong { color: var(--text); }
+  .section-body ul { margin: 10px 0 10px 20px; }
+  .section-body li { margin-bottom: 8px; }
+  .section-body h4 {
+    color: var(--accent); font-size: 16px;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin: 16px 0 8px 0; font-weight: 600;
+  }
+  .section-body h4:first-child { margin-top: 0; }
+  .section-body .quote {
+    border-left: 3px solid var(--accent);
+    padding-left: 16px; margin: 12px 0;
+    color: #555; font-style: italic;
+  }
+  .section-body .hero-card {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .section-body .hero-card:last-child { margin-bottom: 0; }
+  .section-body .hero-card h4 { margin-top: 0; }
+
+  /* ===== ТЕСТ ===== */
+  .test-section {
+    margin-top: 70px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.9s var(--ease) 0.9s both;
+  }
+  .test-header { text-align: center; margin-bottom: 40px; }
+  .test-title {
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .test-subtitle { color: var(--muted); font-size: 15px; letter-spacing: 1px; }
+
+  .quiz-question {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin-bottom: 18px;
+    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .quiz-question.correct { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-bg); }
+  .quiz-question.incorrect { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-bg); }
+
+  .quiz-q-num {
+    font-size: 13px; color: var(--accent);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .quiz-q-text { font-size: 17px; font-weight: 600; margin-bottom: 16px; line-height: 1.4; }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .quiz-option:hover { background: var(--bg); border-color: var(--accent); }
+  .quiz-option input { display: none; }
+  .quiz-option .radio {
+    width: 18px; height: 18px;
+    border: 2px solid var(--muted);
+    border-radius: 50%;
+    flex-shrink: 0; position: relative;
+    transition: border-color 0.2s var(--ease);
+  }
+  .quiz-option.selected { background: rgba(138,109,59,0.08); border-color: var(--accent); }
+  .quiz-option.selected .radio { border-color: var(--accent); }
+  .quiz-option.selected .radio::after {
+    content: ""; position: absolute;
+    inset: 3px; background: var(--accent);
+    border-radius: 50%;
+  }
+  .quiz-option.correct { background: var(--green-bg); border-color: var(--green); }
+  .quiz-option.correct .radio { border-color: var(--green); }
+  .quiz-option.correct .radio::after { background: var(--green); }
+  .quiz-option.incorrect { background: var(--red-bg); border-color: var(--red); }
+  .quiz-option.incorrect .radio { border-color: var(--red); }
+  .quiz-option.incorrect .radio::after { background: var(--red); }
+  .quiz-option.disabled { cursor: default; }
+  .quiz-option.disabled:hover { background: inherit; }
+
+  .quiz-actions {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 32px; flex-wrap: wrap;
+  }
+  .quiz-btn {
+    padding: 14px 32px;
+    border: none; border-radius: 8px;
+    font-family: inherit; font-size: 14px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s var(--ease), transform 0.2s var(--ease), letter-spacing 0.3s var(--ease);
+  }
+  .quiz-btn-primary { background: var(--text); color: #fff; }
+  .quiz-btn-primary:hover { background: var(--accent); letter-spacing: 1.9px; transform: translateY(-2px); }
+  .quiz-btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .quiz-btn-secondary:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+
+  .quiz-result {
+    margin-top: 24px;
+    padding: 20px 24px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 18px; font-weight: 600;
+    opacity: 0; transform: translateY(-6px);
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+  }
+  .quiz-result.show { opacity: 1; transform: translateY(0); }
+  .quiz-result.good { background: var(--green-bg); color: var(--green); }
+  .quiz-result.mid  { background: #fff8e1; color: #b26a00; }
+  .quiz-result.bad  { background: var(--red-bg); color: var(--red); }
+  .quiz-result small { display: block; font-size: 14px; font-weight: 400; margin-top: 4px; opacity: 0.85; }
+
+  /* ===== АДАПТИВ ===== */
+  @media (max-width: 768px) {
+    .site-title { font-size: 16px; letter-spacing: 2px; }
+    main.article-page { padding: 110px 18px 60px 18px; }
+    .section-btn { padding: 16px 20px; font-size: 16px; }
+    .section-block.open > .section-body { padding: 4px 20px 20px 20px; }
+    .section-body { font-size: 15px; padding: 0 20px; }
+    .quiz-question { padding: 20px; }
+    .quiz-q-text { font-size: 16px; }
+    .quiz-option { padding: 10px 12px; font-size: 15px; }
+  }
+</style>
+</head>
+<body>
+
+  <header>
+    <button class="burger" id="burger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="site-title">Название</a>
+    <a href="index.html" class="home-btn" aria-label="На главную">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+    </a>
+  </header>
+
+  <aside class="drawer" id="drawer">
+    <nav id="menuNav"></nav>
+    <div class="contacts">
+      <a href="contacs.html">Контакты</a>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <main class="article-page">
+    <header class="article-header">
+      <p class="article-author">Н.М. Карамзин</p>
+      <h1 class="article-title">Бедная Лиза</h1>
+      <p class="article-meta">Повесть · 1792 · Сентиментализм</p>
+      <div class="divider"></div>
+    </header>
+
+    <section class="article-sections">
+
+      <div class="section-block">
+        <button class="section-btn">Жанр</button>
+        <div class="section-body">
+          <p><strong>Повесть.</strong> «Бедная Лиза» традиционно определяется как повесть — небольшое прозаическое произведение с динамичным сюжетом и трагической развязкой. Однако исследователи отмечают в ней черты и других жанров:</p>
+          <ul>
+            <li><strong>Бытовая повесть</strong> — описывает жизнь крестьян.</li>
+            <li><strong>Философская повесть</strong> — поднимает вопросы любви и ответственности.</li>
+            <li><strong>Элементы драмы</strong> — присутствует конфликт и самоубийство героини.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Направление: Сентиментализм</button>
+        <div class="section-body">
+          <p>Это основное и самое важное определение. Карамзин впервые в русской литературе сделал главным объектом изображения <strong>внутренний мир человека</strong>, его чувства и переживания, а не гражданский долг или разум.</p>
+          <ul>
+            <li><strong>Культ чувства:</strong> автор утверждает, что «и крестьянки любить умеют», подчёркивая внесословную ценность человека.</li>
+            <li><strong>Идеализация:</strong> жизнь крестьян показана идиллически, а речь Лизы не отличается от речи дворянина Эраста.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Род литературы</button>
+        <div class="section-body">
+          <p>«Бедная Лиза» относится к <strong>эпосу</strong> (точнее, к эпическому роду литературы), так как представляет собой прозаическое повествование о событиях, происходящих с персонажами во времени, с наличием рассказчика.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">История создания</button>
+        <div class="section-body">
+          <p>В 1789–1790 годах Карамзин отправился в поездку по Германии, Англии, Франции и Швейцарии. Он стал свидетелем Великой французской революции и познакомился с идеями Просвещения. Вернувшись, он привёз не только впечатления (позже легшие в основу «Писем русского путешественника»), но и убеждение, что литературе нужен новый язык — близкий к разговорному, свободный от церковнославянской тяжеловесности.</p>
+          <p>Повесть была написана в <strong>1792 году</strong> и опубликована в «Московском журнале», который Карамзин сам издавал. Через четыре года (в 1796-м) она вышла отдельной книгой.</p>
+          <p>Главное новаторство заключалось в том, что Карамзин <strong>перенёс европейскую сентиментальную схему на русский материал</strong>. Сюжет о несчастной любви крестьянки и дворянина не был оригинальным, но Карамзин сделал героиней простую девушку и заставил читателя ей сочувствовать. Кроме того, действие происходило не в «некоем городе», а в узнаваемых местах Москвы — у Симонова монастыря и берёзовой рощи, что усиливало эффект достоверности.</p>
+          <p>Успех был оглушительным. Читатели восприняли историю как реальную: пруд у Симонова монастыря стал местом паломничества, его называли «Лизиным», там оставляли стихи и объяснялись в любви. Появились многочисленные подражания («Бедная Маша», «Прекрасная Татьяна» и др.). Позже Пушкин иронично обыграл этот сюжет в «Барышне-крестьянке».</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Краткое содержание</button>
+        <div class="section-body">
+          <p>Крестьянка Лиза влюбляется в дворянина Эраста. Он клянётся в вечной любви, но после близости охладевает и женится на богатой невесте. Лиза, не вынеся предательства, топится в пруду. Мать умирает от горя. Эраст до конца жизни считает себя убийцей.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Подробное содержание</button>
+        <div class="section-body">
+          <p>Повествование ведётся от лица автора-рассказчика. Он гуляет по окрестностям Москвы, любуется видом на Симонов монастырь и вспоминает историю, случившуюся «лет за тридцать до сего времени». Именно здесь, у берёзовой рощи и пруда, жила бедная Лиза.</p>
+          <p>Лиза — крестьянская девушка, живёт с матерью в хижине. После смерти отца (зажиточного крестьянина) они обеднели. Лиза, чтобы прокормить мать, продаёт в городе ландыши и вязаные чулки. Мать мечтает выдать дочь замуж за крестьянина, но Лиза отвечает, что не пойдёт за богатого.</p>
+          <p>Однажды весной Лиза продаёт ландыши в Москве и встречает молодого дворянина Эраста. Он поражён её красотой и чистотой, покупает все цветы и предлагает ей продавать их только ему. Лиза смущена, но обещает.</p>
+          <p>Эраст — богатый, но ветреный и избалованный барин, ищущий романтики. Он приходит к Лизе на свидания у пруда. Лиза влюбляется искренне и глубоко. Эраст клянётся в вечной любви. Мать радуется, но предупреждает: «Ты ещё молода, а дворяне…». Лиза, ослеплённая чувством, не слушает.</p>
+          <p>Эраст приходит к Лизе в сильном волнении и говорит, что должен уехать на войну. Лиза плачет, просит остаться. В порыве страсти происходит их физическая близость. Эраст обещает вернуться и жениться. После этого свидания он становится сдержанным, реже приходит. Лиза замечает перемену, но боится себе признаться.</p>
+          <p>Проходит время. Лиза случайно встречает Эраста в Москве. Он холоден и говорит, что помолвлен с богатой дворянкой, так как должен поправить своё состояние. Он предлагает Лизе деньги — она отказывается. Эраст выпроваживает её. Для Лизы это страшный удар: он предал её, а главное — она «погубила» свою чистоту.</p>
+          <p>Лиза не может пережить измены и стыда. Она идёт к пруду, где встречалась с Эрастом, и бросается в воду. Её находят мёртвой. Мать, узнав о смерти дочери, умирает от горя. Рассказчик завершает повесть словами о том, что Эраст, узнав о гибели Лизы, долго не мог утешиться, считал себя убийцей и теперь, возможно, сам лишил себя жизни.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Герои</button>
+        <div class="section-body">
+          <div class="hero-card">
+            <h4>Лиза</h4>
+            <p>Крестьянская девушка, живущая с матерью в хижине у Симонова монастыря. Добрая, чистая, искренняя, живёт по законам сердца. Символ «естественного человека». Не выдержав предательства, топится в пруду.</p>
+          </div>
+          <div class="hero-card">
+            <h4>Эраст</h4>
+            <p>Молодой дворянин, богатый, но ветреный и избалованный. Ищет романтики, но не способен на глубокое чувство. Промотав состояние, женится на богатой вдове. До конца жизни считает себя убийцей Лизы.</p>
+          </div>
+          <div class="hero-card">
+            <h4>Мать Лизы</h4>
+            <p>Добрая крестьянка, любящая дочь. После смерти мужа живёт в бедности. Умирает от горя, узнав о гибели дочери.</p>
+          </div>
+          <div class="hero-card">
+            <h4>Рассказчик</h4>
+            <p>Автор-повествователь, от лица которого ведётся история. Гуляет по окрестностям Москвы, вспоминает события «лет за тридцать до сего времени». Сочувствует героине.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Конфликты</button>
+        <div class="section-body">
+          <h4>Социальный конфликт</h4>
+          <p>Это столкновение сословного неравенства: крестьянка Лиза и дворянин Эраст.</p>
+          <ul>
+            <li><strong>Непреодолимая пропасть:</strong> представители разных сословий не могут быть вместе. Лиза прекрасна душой, но она не пара богатому барину.</li>
+            <li><strong>Материальная зависимость:</strong> Эраст, промотав состояние, вынужден жениться на богатой вдове, что и становится причиной предательства.</li>
+          </ul>
+          <h4>Нравственно-психологический конфликт</h4>
+          <ul>
+            <li><strong>«Естественный человек» против «цивилизации»:</strong> Лиза олицетворяет искренность и природу, тогда как Эраст — испорченный светом горожанин. Его чувство было лишь временной игрой, а её любовь — вечной.</li>
+            <li><strong>Разное отношение к любви:</strong> для Лизы любовь — смысл жизни, для Эраста — лишь эпизод. После близости его чувства угасают, в то время как она привязывается ещё сильнее.</li>
+            <li><strong>Внутренний конфликт героини:</strong> Лиза оказывается между своей любовью и осознанием греха / стыда. Не выдержав предательства и невозможности жить дальше, она совершает самоубийство.</li>
+          </ul>
+          <h4>Мечта и реальность</h4>
+          <p>Лиза мечтает быть женой Эраста, но реальность (социальные нормы) делает это невозможным.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Проблемы</button>
+        <div class="section-body">
+          <ul>
+            <li><strong>Сословное неравенство:</strong> непреодолимая пропасть между крестьянкой и дворянином.</li>
+            <li><strong>Бесправие и зависимость:</strong> Эраст, промотав состояние, вынужден жениться на богатой вдове ради денег.</li>
+            <li><strong>Трагедия неравного брака:</strong> мать Лизы мечтает выдать её за крестьянина, но любовь к дворянину рушит все планы.</li>
+            <li><strong>Проблема «маленького человека»:</strong> простая девушка, чьи чувства и жизнь ничего не значат для высшего света.</li>
+            <li><strong>Ответственность за чужое чувство:</strong> Эраст клянётся в вечной любви, но не несёт ответственности за свои слова.</li>
+            <li><strong>Грех и стыд:</strong> после близости Лиза осознаёт, что «погубила свою душу».</li>
+            <li><strong>Самоубийство как выход:</strong> Лиза не видит иного способа избавиться от стыда и боли.</li>
+            <li><strong>Чувство против разума:</strong> чувства Лизы разбиваются о расчёт Эраста.</li>
+            <li><strong>Природа и цивилизация:</strong> Лиза — «естественный человек», Эраст — «дитя цивилизации», испорченный светом.</li>
+            <li><strong>Свобода воли и судьба:</strong> социальные обстоятельства сильнее личного выбора.</li>
+            <li><strong>Беззащитность женщины:</strong> Лиза не может защитить себя ни от предательства, ни от общественного осуждения.</li>
+            <li><strong>Двойные стандарты:</strong> для Эраста связь с крестьянкой — эпизод, для Лизы — катастрофа.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Важные детали</button>
+        <div class="section-body">
+          <h4>Ландыши</h4>
+          <p>Символ чистоты и хрупкости. Когда Эраст впервые встречает Лизу, он предлагает за букет рубль вместо пяти копеек, но Лиза отказывается от лишнего, подчёркивая свою честность. Позже, не найдя Эраста, она бросает цветы в реку — жест, означающий, что она не может отдать предназначенное одному человеку другому.</p>
+          <h4>Пруд</h4>
+          <p>Центральный топос повести. Сначала это место счастливых свиданий, «глубокий чистый пруд», осенённый столетними дубами. Однако после предательства эпитеты меняются: дуб становится «мрачным», а сам пруд превращается в место гибели Лизы. Эта эволюция пейзажа отражает переход от идиллии к катастрофе.</p>
+          <h4>Деньги</h4>
+          <p>Деньги — маркер нравственного выбора. В начале Лиза берёт только пять копеек — справедливую цену за труд. В финале Эраст предлагает ей сто рублей как «откуп» за предательство. Лиза не берёт их прямо, но и не отказывается демонстративно — она просто уходит.</p>
+          <h4>Дуб</h4>
+          <p>Столетние дубы у пруда — безмолвные свидетели свиданий. После трагедии один из них становится «мрачным», под ним хоронят Лизу.</p>
+          <h4>Симонов монастырь</h4>
+          <p>Вид на монастырь открывает и закрывает повесть, создавая исторический фон и напоминая о бренности земных страстей на фоне вечности.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Интересные факты</button>
+        <div class="section-body">
+          <h4>«Лизин пруд» и паломничество читателей</h4>
+          <p>Повесть произвела эффект, сравнимый с «эффектом Вертера»: впечатлительные читатели устремились к пруду у Симонова монастыря, который стали называть «Лизиным». Одна из сохранившихся эпиграмм: <span class="quote">«Здесь бросилася в пруд Эрастова невеста. Топитесь, девушки: в пруду довольно места!»</span></p>
+          <h4>Волна подражательных самоубийств</h4>
+          <p>Есть сведения, что трагический финал повести спровоцировал волну самоубийств среди юных девушек — своеобразный «эффект Вертера» на русской почве.</p>
+          <h4>«Лизина» топонимика в Москве</h4>
+          <p>Помимо пруда, на карте Москвы появились «Лизина слободка», «Лизина площадь» и даже «Лизин тупик», ведущий к пруду.</p>
+          <h4>Отражение в искусстве</h4>
+          <p>В 1827 году Орест Кипренский написал картину «Бедная Лиза». Позже появились телеспектакль с Андреем Мягковым (1967), фильм Идеи Гараниной (1978), мюзикл Марка Розовского (1989) и камерная опера с Чулпан Хаматовой (2009).</p>
+          <h4>Карамзин правил текст спустя годы</h4>
+          <p>От издания к изданию автор вносил правки. Самый курьёзный пример: у Лизы изначально были чёрные глаза, но в одном из поздних прижизненных изданий Карамзин сделал их голубыми, «подогнав» внешность героини под романтический канон.</p>
+          <h4>«Маркетинг» гения</h4>
+          <p>Успеху повести способствовала стратегия Карамзина: он сначала приучил молодых дворян читать русскоязычную прозу через свой «Московский журнал», а затем предложил им «Бедную Лизу». Тираж был скромным (менее 300 экземпляров), но повесть переписывали от руки и переиздавали десять раз за десять лет.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn">Темы на ЕГЭ</button>
+        <div class="section-body">
+          <ul>
+            <li><strong>«И крестьянки любить умеют»:</strong> образ Лизы и его роль в раскрытии авторского замысла. Лиза как «естественный человек», её нравственная чистота, сила чувства, трагизм положения женщины из низшего сословия.</li>
+            <li><strong>Сентиментализм как литературное направление:</strong> черты и новаторство Карамзина. Культ чувства, внимание к внутреннему миру, роль пейзажа, сближение языка прозы с поэзией, противопоставление классицизму.</li>
+            <li><strong>Образ Эраста и проблема ответственности за чужое чувство:</strong> Эраст как «испорченный светом» дворянин, его легкомыслие, противоречие между клятвами и поступками, авторское отношение к герою.</li>
+            <li><strong>Трагедия социального неравенства:</strong> сословная пропасть, бесправие крестьянки, зависимость дворянина от денег, невозможность счастья «наперекор» обществу.</li>
+            <li><strong>Проблема нравственного выбора и цена любви:</strong> «грехопадение» Лизы, её стыд и отчаяние, самоубийство как следствие невозможности жить с грузом позора.</li>
+            <li><strong>«Маленький человек» в русской литературе:</strong> «Бедная Лиза» — один из первых образов «маленького человека» (наряду с «Станционным смотрителем» Пушкина и «Шинелью» Гоголя).</li>
+            <li><strong>Тема любви в русской литературе:</strong> Лиза как пример самоотверженной, трагической любви; можно сопоставить с Татьяной Лариной (Пушкин), Катериной (Островский).</li>
+            <li><strong>Женская судьба в русской литературе:</strong> Лиза как одна из первых героинь, чья трагедия обусловлена социальным положением и двойными стандартами.</li>
+            <li><strong>Роль пейзажа в литературном произведении:</strong> пруд, дубы, ландыши как символические детали; сопоставление с пейзажами Тургенева, Чехова.</li>
+            <li><strong>Сентиментализм и романтизм:</strong> «Бедная Лиза» как точка отсчёта для русского романтизма (например, сопоставление с «Цыганами» Пушкина).</li>
+          </ul>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="test-section">
+      <header class="test-header">
+        <h2 class="test-title">Тест по повести</h2>
+        <p class="test-subtitle">10 вопросов · выбери один вариант ответа</p>
+      </header>
+      <div id="quiz"></div>
+      <div class="quiz-actions">
+        <button class="quiz-btn quiz-btn-primary" id="checkBtn">Проверить</button>
+        <button class="quiz-btn quiz-btn-secondary" id="resetBtn">Пройти заново</button>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+    </section>
+  </main>
+
+<script>
+const PROGRAM = {
+  "9": [
+    { author: "А.С. Пушкин", works: [
+      { title: "Евгений Онегин",     slug: "pushkin-onegin" },
+      { title: "Капитанская дочка",  slug: "pushkin-kapitanskaya" },
+      { title: "Медный всадник",     slug: "pushkin-mednyj-vsadnik" },
+    ]},
+    { author: "Н.В. Гоголь", works: [
+      { title: "Мёртвые души",       slug: "gogol-mertvye" },
+      { title: "Шинель",             slug: "gogol-shinel" },
+    ]},
+    { author: "А.С. Грибоедов", works: [
+      { title: "Горе от ума",        slug: "griboedov-gore" },
+    ]},
+    { author: "Н.М. Карамзин", works: [
+      { title: "Бедная Лиза",        slug: "karamzin-bednaya-liza", url: "nmk_bl.html" },
+    ]},
+  ],
+  "8": [
+    { author: "А.С. Пушкин", works: [
+      { title: "Капитанская дочка",  slug: "pushkin-kapitanskaya-8" },
+    ]},
+    { author: "М.Ю. Лермонтов", works: [
+      { title: "Мцыри",              slug: "lermontov-mcyri" },
+    ]},
+  ],
+  "7": [
+    { author: "Н.В. Гоголь", works: [
+      { title: "Тарас Бульба",       slug: "gogol-taras" },
+    ]},
+  ],
+  "6": [
+    { author: "А.С. Пушкин", works: [
+      { title: "Дубровский",         slug: "pushkin-dubrovskij" },
+    ]},
+  ],
+};
+
+function buildMenu() {
+  const nav = document.getElementById('menuNav');
+  if (!nav) return;
+  Object.keys(PROGRAM).forEach(classNum => {
+    const block = document.createElement('div');
+    block.className = 'class-block';
+    const btn = document.createElement('button');
+    btn.className = 'class-btn';
+    btn.textContent = `${classNum}й класс`;
+    block.appendChild(btn);
+    const body = document.createElement('div');
+    body.className = 'class-body';
+    PROGRAM[classNum].forEach(authorObj => {
+      const aBlock = document.createElement('div');
+      aBlock.className = 'author-block';
+      const aBtn = document.createElement('button');
+      aBtn.className = 'author-btn';
+      aBtn.textContent = authorObj.author;
+      aBlock.appendChild(aBtn);
+      const aBody = document.createElement('div');
+      aBody.className = 'author-body';
+      authorObj.works.forEach(w => {
+        const a = document.createElement('a');
+        a.className = 'work-link';
+        a.href = w.url || `test.html?class=${classNum}&work=${w.slug}`;
+        a.textContent = w.title;
+        aBody.appendChild(a);
+      });
+      aBlock.appendChild(aBody);
+      body.appendChild(aBlock);
+      aBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasOpen = aBlock.classList.contains('open');
+        body.querySelectorAll('.author-block').forEach(b => b.classList.remove('open'));
+        if (!wasOpen) aBlock.classList.add('open');
+      });
+    });
+    const allLink = document.createElement('a');
+    allLink.className = 'all-program';
+    allLink.href = `test.html?class=${classNum}`;
+    allLink.textContent = 'Вся программа';
+    body.appendChild(allLink);
+    block.appendChild(body);
+    nav.appendChild(block);
+    btn.addEventListener('click', () => {
+      const wasOpen = block.classList.contains('open');
+      nav.querySelectorAll('.class-block').forEach(b => b.classList.remove('open'));
+      if (!wasOpen) block.classList.add('open');
+    });
+  });
+}
+
+/* ===== Аккордеоны разделов ===== */
+function initSections() {
+  document.querySelectorAll('.section-block').forEach(block => {
+    const btn = block.querySelector('.section-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+      block.classList.toggle('open');
+    });
+  });
+}
+
+/* ===== ТЕСТ ===== */
+const QUIZ = [
+  { q: "К какому литературному направлению относится «Бедная Лиза»?",
+    options: ["Классицизм", "Сентиментализм", "Романтизм", "Реализм"], correct: 1 },
+  { q: "В каком году была опубликована повесть?",
+    options: ["1789", "1790", "1792", "1796"], correct: 2 },
+  { q: "Где происходят события повести?",
+    options: ["В Петербурге", "В Москве, у Симонова монастыря", "В Тарханах", "В Киеве"], correct: 1 },
+  { q: "Кем была Лиза по происхождению?",
+    options: ["Дворянкой", "Купчихой", "Крестьянкой", "Мещанкой"], correct: 2 },
+  { q: "Что продавала Лиза в Москве?",
+    options: ["Яблоки", "Ландыши", "Пирожки", "Платки"], correct: 1 },
+  { q: "Как звали возлюбленного Лизы?",
+    options: ["Эраст", "Евгений", "Григорий", "Алексей"], correct: 0 },
+  { q: "Почему Эраст женился на другой?",
+    options: ["Полюбил по-настоящему", "По приказу отца", "Нуждался в деньгах и женился на богатой вдове", "Проиграл в карты"], correct: 2 },
+  { q: "Как погибла Лиза?",
+    options: ["Умерла от болезни", "Утопилась в пруду", "Погибла на войне", "Была убита"], correct: 1 },
+  { q: "Какая фраза из повести стала её главным девизом?",
+    options: ["«Все счастливые семьи похожи друг на друга»", "«И крестьянки любить умеют»", "«Красота спасёт мир»", "«Умом Россию не понять»"], correct: 1 },
+  { q: "В чём главное новаторство Карамзина в «Бедной Лизе»?",
+    options: ["Впервые использован жанр романа", "Внимание к внутреннему миру человека", "Впервые описана жизнь крестьян", "Стихотворная форма"], correct: 1 },
+];
+
+function renderQuiz() {
+  const box = document.getElementById('quiz');
+  box.innerHTML = QUIZ.map((item, qi) => `
+    <div class="quiz-question" data-q="${qi}">
+      <div class="quiz-q-num">Вопрос ${qi + 1} из ${QUIZ.length}</div>
+      <div class="quiz-q-text">${item.q}</div>
+      <div class="quiz-options">
+        ${item.options.map((opt, oi) => `
+          <label class="quiz-option" data-o="${oi}">
+            <input type="radio" name="q${qi}" value="${oi}">
+            <span class="radio"></span>
+            <span>${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  box.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (opt.classList.contains('disabled')) return;
+      const parent = opt.closest('.quiz-question');
+      parent.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+    });
+  });
+}
+
+function checkQuiz() {
+  let correctCount = 0;
+  document.querySelectorAll('.quiz-question').forEach((qBlock, qi) => {
+    const selected = qBlock.querySelector('.quiz-option.selected');
+    const correctIdx = QUIZ[qi].correct;
+    qBlock.classList.remove('correct', 'incorrect');
+    qBlock.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('correct', 'incorrect'));
+
+    const correctOpt = qBlock.querySelector(`.quiz-option[data-o="${correctIdx}"]`);
+    correctOpt.classList.add('correct');
+
+    if (selected) {
+      const selectedIdx = parseInt(selected.dataset.o);
+      if (selectedIdx === correctIdx) {
+        correctCount++;
+        qBlock.classList.add('correct');
+      } else {
+        selected.classList.add('incorrect');
+        qBlock.classList.add('incorrect');
+      }
+    } else {
+      qBlock.classList.add('incorrect');
+    }
+
+    qBlock.querySelectorAll('.quiz-option').forEach(o => o.classList.add('disabled'));
+  });
+
+  const result = document.getElementById('quizResult');
+  result.classList.remove('good', 'mid', 'bad');
+  result.classList.add('show');
+  const score = Math.round((correctCount / QUIZ.length) * 100);
+
+  if (correctCount >= 8) {
+    result.classList.add('good');
+    result.innerHTML = `Отлично! Правильных ответов: ${correctCount} из ${QUIZ.length} (${score}%)<small>Ты отлично знаешь повесть.</small>`;
+  } else if (correctCount >= 5) {
+    result.classList.add('mid');
+    result.innerHTML = `Хорошо! Правильных ответов: ${correctCount} из ${QUIZ.length} (${score}%)<small>Есть над чем поработать.</small>`;
+  } else {
+    result.classList.add('bad');
+    result.innerHTML = `Правильных ответов: ${correctCount} из ${QUIZ.length} (${score}%)<small>Стоит перечитать повесть.</small>`;
+  }
+}
+
+function resetQuiz() {
+  document.querySelectorAll('.quiz-question').forEach(qBlock => {
+    qBlock.classList.remove('correct', 'incorrect');
+    qBlock.querySelectorAll('.quiz-option').forEach(o => {
+      o.classList.remove('selected', 'correct', 'incorrect', 'disabled');
+      o.querySelector('input').checked = false;
+    });
+  });
+  const result = document.getElementById('quizResult');
+  result.classList.remove('show', 'good', 'mid', 'bad');
+  result.innerHTML = '';
+  document.querySelector('.test-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ===== Общая логика ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  buildMenu();
+  initSections();
+  renderQuiz();
+
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
+  const overlay = document.getElementById('overlay');
+  const openDrawer = () => { drawer.classList.add('open'); overlay.classList.add('show'); burger.classList.add('active'); };
+  const closeDrawer = () => { drawer.classList.remove('open'); overlay.classList.remove('show'); burger.classList.remove('active'); };
+  burger.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+  overlay.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+
+  document.getElementById('checkBtn').addEventListener('click', checkQuiz);
+  document.getElementById('resetBtn').addEventListener('click', resetQuiz);
+});
+</script>
+</body>
+</html>
