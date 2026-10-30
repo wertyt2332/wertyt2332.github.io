@@ -37,8 +37,8 @@
   }
   @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-  /* ===== ШАПКА ===== */
-  header {
+  /* ===== ШАПКА (ТЕПЕРЬ ТОЛЬКО .site-header) ===== */
+  .site-header {
     position: fixed; top: 0; left: 0; right: 0;
     height: var(--header-h);
     display: flex; align-items: center; justify-content: space-between;
@@ -513,7 +513,8 @@
 </head>
 <body>
 
-  <header>
+  <!-- ТЕПЕРЬ КЛАСС .site-header -->
+  <header class="site-header">
     <button class="burger" id="burger" aria-label="Меню">
       <span></span><span></span><span></span>
     </button>
@@ -533,6 +534,7 @@
   <div class="overlay" id="overlay"></div>
 
   <main class="article-page">
+    <!-- ВНУТРЕННИЙ HEADER ТЕПЕРЬ НЕ КОНФЛИКТУЕТ -->
     <header class="article-header">
       <p class="article-author">Н.М. Карамзин</p>
       <h1 class="article-title">Бедная Лиза</h1>
@@ -719,6 +721,7 @@
     </section>
 
     <section class="test-section">
+      <!-- ТЕСТОВЫЙ HEADER ТЕПЕРЬ ТОЖЕ СТОИТ НА СВОЕМ МЕСТЕ -->
       <header class="test-header">
         <h2 class="test-title">Тест по повести</h2>
         <p class="test-subtitle">10 вопросов · выбери один вариант ответа</p>
