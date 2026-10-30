@@ -583,7 +583,6 @@
   </main>
 
 <script>
-/* ===== СОДЕРЖИМОЕ ПРОГРАММЫ ===== */
 const PROGRAM = {
   "9": [
     { author: "А.С. Пушкин", works: [
@@ -597,6 +596,9 @@ const PROGRAM = {
     ]},
     { author: "А.С. Грибоедов", works: [
       { title: "Горе от ума",        slug: "griboedov-gore" },
+    ]},
+    { author: "Н.М. Карамзин", works: [
+      { title: "Бедная Лиза",        slug: "karamzin-bednaya-liza", url: "nmk_bl.html" },
     ]},
   ],
   "8": [
@@ -617,53 +619,38 @@ const PROGRAM = {
       { title: "Дубровский",         slug: "pushkin-dubrovskij" },
     ]},
   ],
-  "5": [
-    { author: "И.С. Тургенев", works: [
-      { title: "Муму",               slug: "turgenev-mumu" },
-    ]},
-  ],
 };
 
-/* ===== Отрисовка меню ===== */
 function buildMenu() {
   const nav = document.getElementById('menuNav');
   if (!nav) return;
-
   Object.keys(PROGRAM).forEach(classNum => {
     const block = document.createElement('div');
     block.className = 'class-block';
-
     const btn = document.createElement('button');
     btn.className = 'class-btn';
     btn.textContent = `${classNum}й класс`;
     block.appendChild(btn);
-
     const body = document.createElement('div');
     body.className = 'class-body';
-
     PROGRAM[classNum].forEach(authorObj => {
       const aBlock = document.createElement('div');
       aBlock.className = 'author-block';
-
       const aBtn = document.createElement('button');
       aBtn.className = 'author-btn';
       aBtn.textContent = authorObj.author;
       aBlock.appendChild(aBtn);
-
       const aBody = document.createElement('div');
       aBody.className = 'author-body';
-
       authorObj.works.forEach(w => {
         const a = document.createElement('a');
         a.className = 'work-link';
-        a.href = `test.html?class=${classNum}&work=${w.slug}`;
+        a.href = w.url || `test.html?class=${classNum}&work=${w.slug}`;
         a.textContent = w.title;
         aBody.appendChild(a);
       });
-
       aBlock.appendChild(aBody);
       body.appendChild(aBlock);
-
       aBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const wasOpen = aBlock.classList.contains('open');
@@ -671,16 +658,13 @@ function buildMenu() {
         if (!wasOpen) aBlock.classList.add('open');
       });
     });
-
     const allLink = document.createElement('a');
     allLink.className = 'all-program';
     allLink.href = `test.html?class=${classNum}`;
     allLink.textContent = 'Вся программа';
     body.appendChild(allLink);
-
     block.appendChild(body);
     nav.appendChild(block);
-
     btn.addEventListener('click', () => {
       const wasOpen = block.classList.contains('open');
       nav.querySelectorAll('.class-block').forEach(b => b.classList.remove('open'));
@@ -689,32 +673,91 @@ function buildMenu() {
   });
 }
 
-/* ===== Логика страницы ===== */
+function buildSearchIndex() {
+  const index = [];
+  Object.keys(PROGRAM).forEach(classNum => {
+    index.push({
+      path: `${classNum}й класс`,
+      name: `Вся программа — ${classNum}й класс`,
+      url: `test.html?class=${classNum}`,
+    });
+    PROGRAM[classNum].forEach(authorObj => {
+      index.push({
+        path: `${classNum}й класс`,
+        name: authorObj.author,
+        url: `test.html?class=${classNum}&author=${encodeURIComponent(authorObj.author)}`,
+      });
+      authorObj.works.forEach(w => {
+        index.push({
+          path: `${classNum}й класс · ${authorObj.author}`,
+          name: w.title,
+          url: w.url || `test.html?class=${classNum}&work=${w.slug}`,
+        });
+      });
+    });
+  });
+  return index;
+}
+
+const SEARCH_INDEX = buildSearchIndex();
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+}
+function highlight(text, query) {
+  if (!query) return escapeHtml(text);
+  const safe = escapeHtml(text);
+  const re = new RegExp(`(${query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+  return safe.replace(re, '<mark>$1</mark>');
+}
+function runSearch(query) {
+  const resultsBox = document.getElementById('searchResults');
+  if (!resultsBox) return;
+  const q = query.trim().toLowerCase();
+  if (!q) { resultsBox.classList.remove('show'); resultsBox.innerHTML = ''; return; }
+  const matches = SEARCH_INDEX.filter(item =>
+    item.name.toLowerCase().includes(q) || item.path.toLowerCase().includes(q)
+  ).slice(0, 20);
+  if (matches.length === 0) {
+    resultsBox.innerHTML = `<div class="search-empty">Ничего не найдено</div>`;
+    resultsBox.classList.add('show');
+    return;
+  }
+  resultsBox.innerHTML = matches.map(item => `
+    <a class="search-result" href="${item.url}">
+      <div class="path">${escapeHtml(item.path)}</div>
+      <div class="name">${highlight(item.name, query.trim())}</div>
+    </a>
+  `).join('');
+  resultsBox.classList.add('show');
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   buildMenu();
-
-  const burger  = document.getElementById('burger');
-  const drawer  = document.getElementById('drawer');
+  const burger = document.getElementById('burger');
+  const drawer = document.getElementById('drawer');
   const overlay = document.getElementById('overlay');
+  const searchBtn = document.getElementById('searchBtn');
+  const searchModal = document.getElementById('searchModal');
+  const searchInput = document.getElementById('searchInput');
+  const searchResults = document.getElementById('searchResults');
 
-  const openDrawer = () => {
-    drawer.classList.add('open');
-    overlay.classList.add('show');
-    burger.classList.add('active');
-  };
-  const closeDrawer = () => {
-    drawer.classList.remove('open');
-    overlay.classList.remove('show');
-    burger.classList.remove('active');
-  };
-  burger.addEventListener('click', () => {
-    drawer.classList.contains('open') ? closeDrawer() : openDrawer();
-  });
+  const openDrawer = () => { drawer.classList.add('open'); overlay.classList.add('show'); burger.classList.add('active'); };
+  const closeDrawer = () => { drawer.classList.remove('open'); overlay.classList.remove('show'); burger.classList.remove('active'); };
+  burger.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
   overlay.addEventListener('click', closeDrawer);
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeDrawer();
-  });
+  const openSearch = () => { searchModal.classList.add('show'); setTimeout(() => searchInput.focus(), 200); };
+  const closeSearch = () => {
+    searchModal.classList.remove('show');
+    searchInput.value = '';
+    searchResults.classList.remove('show');
+    searchResults.innerHTML = '';
+  };
+  searchBtn.addEventListener('click', openSearch);
+  searchModal.addEventListener('click', (e) => { if (e.target === searchModal) closeSearch(); });
+  searchInput.addEventListener('input', (e) => runSearch(e.target.value));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeDrawer(); closeSearch(); } });
 });
 </script>
 </body>
