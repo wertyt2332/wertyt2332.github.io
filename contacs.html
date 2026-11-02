@@ -583,6 +583,9 @@
   </main>
 
 <script>
+/* ============================================================
+   СОДЕРЖИМОЕ ПРОГРАММЫ (Меню и поиск)
+   ============================================================ */
 const PROGRAM = {
   "9": [
     { author: "А.С. Пушкин", works: [
@@ -619,8 +622,47 @@ const PROGRAM = {
       { title: "Дубровский",         slug: "pushkin-dubrovskij" },
     ]},
   ],
+  "5": [
+    { author: "Н. Кун", works: [
+      { title: "Мифы Древней Греции", url: "5-kun.html" },
+    ]},
+    { author: "Геродот", works: [
+      { title: "Легенда об Арионе", url: "5-arion.html" },
+    ]},
+    { author: "Русские народные сказки", works: [
+      { title: "Царевна-лягушка", url: "5-frog.html" },
+      { title: "Журавль и цапля", url: "5-crane.html" },
+      { title: "Солдатская шинель", url: "5-shinel.html" },
+    ]},
+    { author: "А.П. Сумароков", works: [
+      { title: "Кокушка", url: "5-kokushka.html" },
+    ]},
+    { author: "И.И. Дмитриев", works: [
+      { title: "Муха", url: "5-fly.html" },
+    ]},
+    { author: "И.А. Крылов", works: [
+      { title: "Волк на псарне", url: "5-wolf.html" },
+      { title: "Свинья под Дубом", url: "5-pig.html" },
+      { title: "Квартет", url: "5-quartet.html" },
+      { title: "Осёл и Соловей", url: "5-donkey.html" },
+      { title: "Ворона и Лисица", url: "5-crow.html" },
+    ]},
+    { author: "А.С. Пушкин", works: [
+      { title: "Сказка о мёртвой царевне...", url: "5-pushkin.html" },
+    ]},
+    { author: "М.Ю. Лермонтов", works: [
+      { title: "Бородино", url: "5-lermontov.html" },
+    ]},
+    { author: "Н.В. Гоголь", works: [
+      { title: "Ночь перед Рождеством", url: "5-gogol-night.html" },
+      { title: "Заколдованное место", url: "5-gogol-place.html" },
+    ]},
+  ]
 };
 
+/* ============================================================
+   Отрисовка меню (аккордеон)
+   ============================================================ */
 function buildMenu() {
   const nav = document.getElementById('menuNav');
   if (!nav) return;
@@ -673,6 +715,9 @@ function buildMenu() {
   });
 }
 
+/* ============================================================
+   Индексация для поиска
+   ============================================================ */
 function buildSearchIndex() {
   const index = [];
   Object.keys(PROGRAM).forEach(classNum => {
@@ -732,32 +777,41 @@ function runSearch(query) {
   resultsBox.classList.add('show');
 }
 
+/* ============================================================
+   Логика страницы
+   ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   buildMenu();
-  const burger = document.getElementById('burger');
-  const drawer = document.getElementById('drawer');
-  const overlay = document.getElementById('overlay');
-  const searchBtn = document.getElementById('searchBtn');
+
+  const burger      = document.getElementById('burger');
+  const drawer      = document.getElementById('drawer');
+  const overlay     = document.getElementById('overlay');
+  const searchBtn   = document.getElementById('searchBtn');
   const searchModal = document.getElementById('searchModal');
   const searchInput = document.getElementById('searchInput');
   const searchResults = document.getElementById('searchResults');
 
-  const openDrawer = () => { drawer.classList.add('open'); overlay.classList.add('show'); burger.classList.add('active'); };
-  const closeDrawer = () => { drawer.classList.remove('open'); overlay.classList.remove('show'); burger.classList.remove('active'); };
-  burger.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
-  overlay.addEventListener('click', closeDrawer);
+  if (burger) {
+    const openDrawer = () => { drawer.classList.add('open'); overlay.classList.add('show'); burger.classList.add('active'); };
+    const closeDrawer = () => { drawer.classList.remove('open'); overlay.classList.remove('show'); burger.classList.remove('active'); };
+    burger.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    overlay.addEventListener('click', closeDrawer);
+  }
 
-  const openSearch = () => { searchModal.classList.add('show'); setTimeout(() => searchInput.focus(), 200); };
-  const closeSearch = () => {
-    searchModal.classList.remove('show');
-    searchInput.value = '';
-    searchResults.classList.remove('show');
-    searchResults.innerHTML = '';
-  };
-  searchBtn.addEventListener('click', openSearch);
-  searchModal.addEventListener('click', (e) => { if (e.target === searchModal) closeSearch(); });
-  searchInput.addEventListener('input', (e) => runSearch(e.target.value));
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeDrawer(); closeSearch(); } });
+  if (searchBtn) {
+    const openSearch = () => { searchModal.classList.add('show'); setTimeout(() => searchInput.focus(), 200); };
+    const closeSearch = () => {
+      searchModal.classList.remove('show');
+      searchInput.value = '';
+      searchResults.classList.remove('show');
+      searchResults.innerHTML = '';
+    };
+    searchBtn.addEventListener('click', openSearch);
+    searchModal.addEventListener('click', (e) => { if (e.target === searchModal) closeSearch(); });
+    searchInput.addEventListener('input', (e) => runSearch(e.target.value));
+    
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { closeDrawer(); closeSearch(); } });
+  }
 });
 </script>
 </body>
