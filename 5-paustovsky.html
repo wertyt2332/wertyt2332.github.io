@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Произведение — ЧТИВО</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+  :root {
+    --bg: #f7f5f0;
+    --text: #1c1c1c;
+    --muted: #6b6b6b;
+    --accent: #8a6d3b;
+    --border: #e0dcd3;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --header-h: 70px;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: var(--bg); color: var(--text);
+    overflow-x: hidden;
+    animation: pageFadeIn 0.6s ease both;
+  }
+  @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ===== ШАПКА ===== */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(247, 245, 240, 0.9);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .burger {
+    width: 42px; height: 42px;
+    border: none; background: transparent; cursor: pointer;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    gap: 5px; border-radius: 6px;
+    transition: background 0.25s var(--ease);
+  }
+  .burger:hover { background: rgba(0, 0, 0, 0.05); }
+  .burger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--text);
+    transition: transform 0.35s var(--ease), opacity 0.25s var(--ease);
+  }
+  .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.active span:nth-child(2) { opacity: 0; }
+  .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .site-title {
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    color: var(--text); text-decoration: none;
+    transition: color 0.25s var(--ease);
+    white-space: nowrap;
+  }
+  .site-title:hover { color: var(--accent); }
+
+  .home-btn {
+    width: 42px; height: 42px;
+    border: none; background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; color: var(--text); text-decoration: none;
+    transition: background 0.25s var(--ease), transform 0.25s var(--ease);
+    flex-shrink: 0;
+  }
+  .home-btn:hover { background: rgba(0, 0, 0, 0.05); transform: scale(1.08); }
+  .home-btn:active { transform: scale(0.94); }
+  .home-btn svg {
+    width: 22px; height: 22px;
+    stroke: var(--text); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: stroke 0.25s var(--ease);
+  }
+  .home-btn:hover svg { stroke: var(--accent); }
+
+  /* ===== ШТОРКА ===== */
+  .drawer {
+    position: fixed; top: 0; left: 0;
+    width: 320px; max-width: 88vw; height: 100%;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+    transform: translateX(-100%);
+    transition: transform 0.4s var(--ease);
+    z-index: 200;
+    display: flex; flex-direction: column;
+    padding: calc(var(--header-h) + 20px) 0 24px 0;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer nav { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+
+  .class-block { position: relative; }
+  .class-btn {
+    width: 100%; display: block; padding: 18px 32px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 18px; color: var(--text);
+    text-align: left; position: relative;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.3s var(--ease), padding-left 0.35s var(--ease), background 0.3s var(--ease);
+  }
+  .class-btn::before {
+    content: ""; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent);
+    transform: scaleY(0); transform-origin: center;
+    transition: transform 0.35s var(--ease);
+  }
+  .class-btn:hover { color: var(--accent); padding-left: 42px; background: var(--bg); }
+  .class-btn:hover::before,
+  .class-block.open > .class-btn::before { transform: scaleY(1); }
+  .class-block.open > .class-btn { color: var(--accent); background: var(--bg); }
+
+  .class-body {
+    max-height: 0; overflow: hidden; background: #fbfaf7;
+    transition: max-height 0.45s var(--ease);
+  }
+  .class-block.open > .class-body { max-height: 5000px; }
+
+  .author-block { position: relative; }
+  .author-btn {
+    width: 100%; display: block; padding: 13px 24px 13px 46px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 16px; color: var(--muted);
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: color 0.3s var(--ease), padding-left 0.35s var(--ease), background 0.3s var(--ease);
+  }
+  .author-btn::before {
+    content: ""; position: absolute;
+    left: 32px; top: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted);
+    transform: translateY(-50%) scale(0.7);
+    transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .author-btn:hover { color: var(--accent); padding-left: 54px; background: rgba(0, 0, 0, 0.02); }
+  .author-btn:hover::before { background: var(--accent); transform: translateY(-50%) scale(1); }
+  .author-block.open > .author-btn {
+    color: var(--accent); font-weight: 600;
+    background: rgba(138, 109, 59, 0.05);
+  }
+  .author-block.open > .author-btn::before { background: var(--accent); transform: translateY(-50%) scale(1); }
+
+  .author-body {
+    max-height: 0; overflow: hidden; background: #ffffff;
+    transition: max-height 0.4s var(--ease);
+  }
+  .author-block.open > .author-body { max-height: 2000px; }
+
+  .work-link {
+    display: block; padding: 10px 24px 10px 66px;
+    font-size: 15px; color: var(--text);
+    text-decoration: none; position: relative;
+    transition: color 0.25s var(--ease), background 0.25s var(--ease), padding-left 0.3s var(--ease);
+  }
+  .work-link::before {
+    content: ""; position: absolute;
+    left: 50px; top: 50%;
+    width: 6px; height: 1px; background: var(--muted);
+    transition: width 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  .work-link:hover { color: var(--accent); background: rgba(138, 109, 59, 0.06); padding-left: 72px; }
+  .work-link:hover::before { width: 12px; background: var(--accent); }
+
+  .all-program {
+    display: block; margin: 14px 24px 18px 32px; padding: 13px 16px;
+    background: var(--text); color: #fff;
+    font-size: 12px; letter-spacing: 1.4px;
+    text-transform: uppercase; text-align: center;
+    text-decoration: none; border-radius: 6px;
+    transition: background 0.3s var(--ease), transform 0.25s var(--ease);
+  }
+  .all-program:hover { background: var(--accent); transform: translateY(-1px); }
+
+  .drawer .contacts { padding: 16px 24px 0 24px; border-top: 1px solid var(--border); }
+  .drawer .contacts a {
+    display: block; text-align: center; padding: 14px;
+    background: transparent; color: var(--text);
+    text-decoration: none; font-size: 15px;
+    letter-spacing: 1px; text-transform: uppercase;
+    border: 1px solid var(--border); border-radius: 6px;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .drawer .contacts a:hover { background: var(--bg); color: var(--accent); border-color: var(--accent); }
+
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.35s var(--ease), visibility 0.35s var(--ease);
+    z-index: 150;
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  }
+  .overlay.show { opacity: 1; visibility: visible; }
+
+  /* ===== КОНТЕНТ СТАТЬИ ===== */
+  main.article-page {
+    padding: calc(var(--header-h) + 40px) 20px 80px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .article-header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeUp 0.9s var(--ease) 0.1s both;
+    padding: 0 4px;
+  }
+  .article-author {
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+  }
+  .article-title {
+    font-size: clamp(26px, 5.5vw, 52px);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.15;
+    margin: 0 auto 14px auto;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    animation: titleIn 1s var(--ease) 0.2s both;
+  }
+  @keyframes titleIn { from { opacity: 0; } to { opacity: 1; } }
+  .article-meta {
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 26px;
+    overflow-wrap: anywhere;
+    padding: 0 4px;
+  }
+  .divider {
+    width: 60px; height: 2px;
+    background: var(--accent);
+    margin: 0 auto 40px auto;
+    animation: dividerGrow 0.8s var(--ease) 0.4s both;
+  }
+  @keyframes dividerGrow { from { width: 0; } to { width: 60px; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== АККОРДЕОНЫ РАЗДЕЛОВ ===== */
+  .article-sections {
+    display: flex; flex-direction: column; gap: 10px;
+    width: 100%;
+  }
+
+  .section-block {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    animation: fadeUp 0.7s var(--ease) both;
+    transition: box-shadow 0.3s var(--ease);
+    width: 100%;
+  }
+  .section-block:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+
+  .section-btn {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 18px 24px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 17px; font-weight: 600;
+    color: var(--text); text-align: left;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease);
+    overflow-wrap: anywhere;
+  }
+  .section-btn > span,
+  .section-btn > :first-child { flex: 1; min-width: 0; }
+  .section-btn:hover { background: var(--bg); color: var(--accent); }
+  .section-btn::after {
+    content: "+";
+    font-size: 22px; color: var(--muted); font-weight: 400;
+    transition: color 0.3s var(--ease);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .section-block.open > .section-btn { color: var(--accent); background: var(--bg); }
+  .section-block.open > .section-btn::after { content: "−"; color: var(--accent); }
+
+  .section-body {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 24px;
+    line-height: 1.75;
+    font-size: 16px;
+    color: #333;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    transition: max-height 0.5s var(--ease), padding 0.4s var(--ease);
+  }
+  .section-block.open > .section-body {
+    max-height: 4000px;
+    padding: 4px 24px 22px 24px;
+  }
+  .section-body p + p { margin-top: 12px; }
+  .section-body strong { color: var(--text); }
+  .section-body ul { margin: 10px 0 10px 20px; }
+  .section-body li { margin-bottom: 8px; }
+  .section-body h4 {
+    color: var(--accent); font-size: 15px;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin: 16px 0 8px 0; font-weight: 600;
+  }
+  .section-body h4:first-child { margin-top: 0; }
+  .section-body .quote {
+    display: block;
+    border-left: 3px solid var(--accent);
+    padding-left: 16px; margin: 12px 0;
+    color: #555; font-style: italic;
+  }
+
+  /* ===== ТЕСТ ===== */
+  .test-section {
+    margin-top: 60px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.9s var(--ease) 0.9s both;
+    width: 100%;
+  }
+  .test-header { text-align: center; margin-bottom: 32px; }
+  .test-title {
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+  }
+  .test-subtitle {
+    color: var(--muted); font-size: 14px;
+    letter-spacing: 1px;
+    overflow-wrap: anywhere;
+  }
+
+  .quiz-question {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    width: 100%;
+    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .quiz-question.correct { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-bg); }
+  .quiz-question.incorrect { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-bg); }
+
+  .quiz-q-num {
+    font-size: 12px; color: var(--accent);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+  }
+  .quiz-q-text {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+  }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .quiz-option {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border); border-radius: 6px;
+    cursor: pointer; width: 100%; min-width: 0;
+    overflow-wrap: anywhere; word-wrap: break-word;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .quiz-option > span:last-child { flex: 1; min-width: 0; overflow-wrap: anywhere; word-wrap: break-word; }
+  .quiz-option:hover { background: var(--bg); border-color: var(--accent); }
+  .quiz-option input { display: none; }
+  .quiz-option .radio {
+    width: 18px; height: 18px;
+    border: 2px solid var(--muted); border-radius: 50%;
+    flex-shrink: 0; position: relative; margin-top: 2px;
+    transition: border-color 0.2s var(--ease);
+  }
+  .quiz-option.selected { background: rgba(138,109,59,0.08); border-color: var(--accent); }
+  .quiz-option.selected .radio { border-color: var(--accent); }
+  .quiz-option.selected .radio::after {
+    content: ""; position: absolute; inset: 3px;
+    background: var(--accent); border-radius: 50%;
+  }
+  .quiz-option.correct { background: var(--green-bg); border-color: var(--green); }
+  .quiz-option.correct .radio { border-color: var(--green); }
+  .quiz-option.correct .radio::after { background: var(--green); }
+  .quiz-option.incorrect { background: var(--red-bg); border-color: var(--red); }
+  .quiz-option.incorrect .radio { border-color: var(--red); }
+  .quiz-option.incorrect .radio::after { background: var(--red); }
+  .quiz-option.disabled { cursor: default; }
+
+  .quiz-actions {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 28px; flex-wrap: wrap;
+  }
+  .quiz-btn {
+    padding: 13px 28px; border: none; border-radius: 8px;
+    font-family: inherit; font-size: 14px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s var(--ease), transform 0.2s var(--ease);
+  }
+  .quiz-btn-primary { background: var(--text); color: #fff; }
+  .quiz-btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+  .quiz-btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .quiz-btn-secondary:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+
+  .quiz-result {
+    margin-top: 24px; padding: 18px 22px;
+    border-radius: 10px; text-align: center;
+    font-size: 17px; font-weight: 600;
+    opacity: 0; transform: translateY(-6px);
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+    overflow-wrap: anywhere;
+  }
+  .quiz-result.show { opacity: 1; transform: translateY(0); }
+  .quiz-result.good { background: var(--green-bg); color: var(--green); }
+  .quiz-result.mid  { background: #fff8e1; color: #b26a00; }
+  .quiz-result.bad  { background: var(--red-bg); color: var(--red); }
+  .quiz-result small { display: block; font-size: 13px; font-weight: 400; margin-top: 4px; opacity: 0.85; }
+
+  /* ===== АДАПТИВ ===== */
+  @media (max-width: 768px) {
+    .site-title { font-size: 15px; letter-spacing: 1px; }
+    main.article-page { padding: calc(var(--header-h) + 28px) 16px 60px 16px; }
+    .article-title { font-size: clamp(24px, 7vw, 38px); }
+    .article-meta { font-size: 13px; letter-spacing: 0.5px; }
+    .section-btn { padding: 16px 18px; font-size: 16px; }
+    .section-block.open > .section-body { padding: 4px 18px 18px 18px; }
+    .section-body { font-size: 15px; padding: 0 18px; }
+    .quiz-question { padding: 18px 16px; }
+    .quiz-q-text { font-size: 15px; }
+    .quiz-option { padding: 10px 12px; font-size: 14px; gap: 10px; }
+    .test-title { letter-spacing: 1px; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="site-header">
+    <button class="burger" id="burger" aria-label="Меню">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="index.html" class="site-title">Название</a>
+    <a href="index.html" class="home-btn" aria-label="На главную">
+      <svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+    </a>
+  </header>
+
+  <aside class="drawer" id="drawer">
+    <nav id="menuNav"></nav>
+    <div class="contacts">
+      <a href="contacs.html">Контакты</a>
+    </div>
+  </aside>
+
+  <div class="overlay" id="overlay"></div>
+
+  <main class="article-page">
+      <main class="article-page">
+    <header class="article-header">
+      <p class="article-author">К.Г. Паустовский</p>
+      <h1 class="article-title">Заячьи лапы</h1>
+      <p class="article-meta">Рассказ · 1937 · Реализм</p>
+      <div class="divider"></div>
+    </header>
+
+    <section class="article-sections">
+      <div class="section-block">
+        <button class="section-btn"><span>Жанр, Род, Направление</span></button>
+        <div class="section-body">
+          <p><strong>Жанр:</strong> Рассказ (лирический, с элементами очерка).</p>
+          <p><strong>Род:</strong> Эпос.</p>
+          <p><strong>Направление:</strong> Реализм.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>История создания</span></button>
+        <div class="section-body">
+          <p>Написан в 1937 году. Паустовский часто писал о природе и человеческой доброте. В основе рассказа — история о том, как заяц спас деда Лариона от лесного пожара, а тот, в свою очередь, пытается спасти раненого зайца.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Герои</span></button>
+        <div class="section-body">
+          <ul>
+            <li><strong>Ваня Малявин:</strong> мальчик, который нашел зайца и принес его деду. Добрый, настойчивый.</li>
+            <li><strong>Дед Ларион:</strong> старый охотник. В прошлом он пожалел зайца, и тот спас его от пожара.</li>
+            <li><strong>Ветеринар:</strong> равнодушный человек, который отказался лечить зайца.</li>
+            <li><strong>Доктор Карл Петрович:</strong> детский врач, который, узнав историю, соглашается помочь зайцу.</li>
+            <li><strong>Заяц:</strong> с рваным ухом. Символ того, что добро возвращается.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Конфликт и Проблемы</span></button>
+        <div class="section-body">
+          <h4>Конфликт</h4>
+          <p>Внешний: Ваня и дед против равнодушных людей (ветеринар, аптекарь). Внутренний: дед Ларион чувствует вину за то, что чуть не убил зайца, и хочет искупить свою вину.</p>
+          <h4>Проблемы</h4>
+          <ul>
+            <li><strong>Милосердия и доброты:</strong> способность человека пожалеть животное.</li>
+            <li><strong>Благодарности:</strong> заяц спас деда, а дед спасает зайца.</li>
+            <li><strong>Равнодушия:</strong> ветеринар отказал в помощи, но нашлись добрые люди.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Важные детали и факты</span></button>
+        <div class="section-body">
+          <h4>Важные детали</h4>
+          <p><strong>Рваное ухо зайца</strong> — напоминание о пожаре. <strong>Лесной пожар</strong> — страшная стихия, которая объединяет человека и животное в борьбе за жизнь.</p>
+          <h4>Интересные факты</h4>
+          <p>Рассказ учит тому, что добро всегда возвращается. Паустовский часто использовал реальные истории, которые слышал от знакомых.</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Темы на ЕГЭ (Итоговое)</span></button>
+        <div class="section-body">
+          <ul>
+            <li><strong>«Доброта и милосердие»:</strong> как важно помогать тем, кто слабее.</li>
+            <li><strong>«Человек и природа»:</strong> природа мстит и прощает.</li>
+            <li><strong>«Благодарность»:</strong> заяц, спасший деда.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="test-section">
+      <header class="test-header">
+        <h2 class="test-title">Тест по рассказу</h2>
+        <p class="test-subtitle">5 вопросов · выбери один вариант ответа</p>
+      </header>
+      <div id="quiz"></div>
+      <div class="quiz-actions">
+        <button class="quiz-btn quiz-btn-primary" id="checkBtn">Проверить</button>
+        <button class="quiz-btn quiz-btn-secondary" id="resetBtn">Пройти заново</button>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+    </section>
+  </main>
+    <header class="article-header">
+      <p class="article-author">Автор</p>
+      <h1 class="article-title">Название произведения</h1>
+      <p class="article-meta">Жанр · Год · Направление</p>
+      <div class="divider"></div>
+    </header>
+
+    <section class="article-sections">
+      <div class="section-block">
+        <button class="section-btn"><span>Жанр, Род, Направление</span></button>
+        <div class="section-body">
+          <p><strong>Жанр:</strong> ...</p>
+          <p><strong>Род:</strong> ...</p>
+          <p><strong>Направление:</strong> ...</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>История создания</span></button>
+        <div class="section-body">
+          <p>...</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Краткое содержание</span></button>
+        <div class="section-body">
+          <p>...</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Герои</span></button>
+        <div class="section-body">
+          <ul>
+            <li><strong>Герой 1:</strong> ...</li>
+            <li><strong>Герой 2:</strong> ...</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Конфликт и Проблемы</span></button>
+        <div class="section-body">
+          <p>...</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Важные детали и факты</span></button>
+        <div class="section-body">
+          <p>...</p>
+        </div>
+      </div>
+
+      <div class="section-block">
+        <button class="section-btn"><span>Темы на ЕГЭ (Итоговое)</span></button>
+        <div class="section-body">
+          <ul>
+            <li>...</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="test-section">
+      <header class="test-header">
+        <h2 class="test-title">Тест по произведению</h2>
+        <p class="test-subtitle">5 вопросов · выбери один вариант ответа</p>
+      </header>
+      <div id="quiz"></div>
+      <div class="quiz-actions">
+        <button class="quiz-btn quiz-btn-primary" id="checkBtn">Проверить</button>
+        <button class="quiz-btn quiz-btn-secondary" id="resetBtn">Пройти заново</button>
+      </div>
+      <div class="quiz-result" id="quizResult"></div>
+    </section>
+  </main>
+
+<script>
+/* ============================================================
+   ПОЛНЫЙ СПИСОК ПРОГРАММЫ (5-9 КЛАСС)
+   Один раз вставил — работает на всех страницах.
+   ============================================================ */
+const PROGRAM = {
+  "9": [
+    { author: "Древнерусская литература", works: [ { title: "Слово о полку Игореве", url: "9-igor.html" } ] },
+    { author: "М.В. Ломоносов", works: [ { title: "Оды и стихотворения", url: "9-lomonosov.html" } ] },
+    { author: "Г.Р. Державин", works: [ { title: "Оды", url: "9-derzhavin.html" } ] },
+    { author: "А.С. Грибоедов", works: [ { title: "Горе от ума", url: "9-woe.html" } ] },
+    { author: "А.С. Пушкин", works: [ { title: "Евгений Онегин", url: "9-onegin.html" }, { title: "Моцарт и Сальери", url: "8-salieri.html" } ] },
+    { author: "М.Ю. Лермонтов", works: [ { title: "Герой нашего времени", url: "9-hero.html" } ] },
+    { author: "Н.В. Гоголь", works: [ { title: "Мёртвые души", url: "9-dead-souls.html" } ] },
+    { author: "А.Н. Островский", works: [ { title: "Бедность не порок", url: "9-bednost.html" } ] },
+    { author: "И.С. Тургенев", works: [ { title: "Первая любовь", url: "9-first-love.html" } ] },
+    { author: "Л.Н. Толстой", works: [ { title: "Юность", url: "9-yunost.html" } ] },
+    { author: "Ф.М. Достоевский", works: [ { title: "Белые ночи", url: "9-white-nights.html" } ] },
+    { author: "А.П. Чехов", works: [ { title: "Студент. Крыжовник. Дама с собачкой", url: "9-chekhov.html" } ] },
+    { author: "И.А. Бунин", works: [ { title: "Тёмные аллеи", url: "9-bunin.html" } ] },
+    { author: "М.А. Булгаков", works: [ { title: "Собачье сердце", url: "9-dog-heart.html" } ] },
+    { author: "А.И. Солженицын", works: [ { title: "Матрёнин двор", url: "9-matryona.html" } ] },
+    { author: "У. Шекспир", works: [ { title: "Гамлет", url: "9-hamlet.html" } ] },
+    { author: "Данте Алигьери", works: [ { title: "Божественная комедия", url: "9-dante.html" } ] },
+    { author: "И.В. Гёте", works: [ { title: "Фауст", url: "9-faust.html" } ] },
+    { author: "Н.М. Карамзин", works: [ { title: "Бедная Лиза", url: "nmk_bl.html" } ] }
+  ],
+  "8": [
+    { author: "Житийная литература", works: [ { title: "Житие Сергия Радонежского", url: "8-sergiy.html" } ] },
+    { author: "Народная сатира", works: [ { title: "Шемякин суд", url: "8-shemyakin.html" } ] },
+    { author: "Д.И. Фонвизин", works: [ { title: "Недоросль", url: "8-nedorosl.html" } ] },
+    { author: "А.С. Пушкин", works: [ { title: "Капитанская дочка", url: "8-kapitanskaya.html" } ] },
+    { author: "М.Ю. Лермонтов", works: [ { title: "Мцыри", url: "8-mcyri.html" } ] },
+    { author: "Н.В. Гоголь", works: [ { title: "Ревизор", url: "8-revisor.html" }, { title: "Шинель", url: "8-shinel.html" } ] },
+    { author: "Н.М. Карамзин", works: [ { title: "Наталья, боярская дочь", url: "8-natalia.html" } ] },
+    { author: "И.С. Тургенев", works: [ { title: "Ася", url: "8-asya.html" } ] },
+    { author: "Л.Н. Толстой", works: [ { title: "После бала", url: "8-after-ball.html" } ] },
+    { author: "Н.С. Лесков", works: [ { title: "Старый гений", url: "8-genius.html" } ] },
+    { author: "М.Е. Салтыков-Щедрин", works: [ { title: "История одного города", url: "8-saltykov.html" } ] },
+    { author: "А.П. Чехов", works: [ { title: "Человек в футляре. Крыжовник. О любви", url: "8-chekhov.html" } ] },
+    { author: "А.Т. Твардовский", works: [ { title: "Василий Тёркин", url: "8-tvardovsky.html" } ] },
+    { author: "М.А. Шолохов", works: [ { title: "Судьба человека", url: "8-sudba.html" } ] },
+    { author: "В.П. Астафьев", works: [ { title: "Фотография, на которой меня нет", url: "8-foto.html" } ] },
+    { author: "У. Шекспир", works: [ { title: "Ромео и Джульетта", url: "8-shakespeare.html" } ] },
+    { author: "Ж.-Б. Мольер", works: [ { title: "Мещанин во дворянстве", url: "8-moliere.html" } ] },
+    { author: "Дж. Свифт", works: [ { title: "Путешествия Гулливера", url: "8-swift.html" } ] },
+    { author: "В. Скотт", works: [ { title: "Айвенго", url: "8-ivanhoe.html" } ] }
+  ],
+  "7": [
+    { author: "Владимир Мономах", works: [ { title: "Поучение", url: "7-monoma.html" } ] },
+    { author: "Древнерусская литература", works: [ { title: "Повесть о Петре и Февронии", url: "7-fevronia.html" } ] },
+    { author: "А.С. Пушкин", works: [ { title: "Повести Белкина", url: "7-belkin.html" } ] },
+    { author: "М.Ю. Лермонтов", works: [ { title: "Песня про купца Калашникова", url: "7-kalashnikov.html" } ] },
+    { author: "Н.В. Гоголь", works: [ { title: "Тарас Бульба", url: "7-taras.html" } ] },
+    { author: "И.С. Тургенев", works: [ { title: "Бирюк", url: "7-biryuk.html" } ] },
+    { author: "Л.Н. Толстой", works: [ { title: "После бала", url: "7-tolstoy.html" } ] },
+    { author: "Н.А. Некрасов", works: [ { title: "Железная дорога. Размышления...", url: "7-nekrasov.html" } ] },
+    { author: "А.П. Чехов", works: [ { title: "Хамелеон. Злоумышленник. Тоска", url: "7-chekhov.html" } ] },
+    { author: "М. Горький", works: [ { title: "Старуха Изергиль (Данко)", url: "7-danko.html" }, { title: "Детство", url: "7-gorky-childhood.html" } ] },
+    { author: "А.П. Платонов", works: [ { title: "Юшка", url: "7-yushka.html" } ] },
+    { author: "Е.И. Носов", works: [ { title: "Кукла", url: "7-nosov.html" } ] },
+    { author: "Ф.А. Абрамов", works: [ { title: "О чём плачут лошади", url: "7-abramov.html" } ] },
+    { author: "О. Генри", works: [ { title: "Дары волхвов", url: "7-henry.html" } ] },
+    { author: "Р. Брэдбери", works: [ { title: "Всё лето в один день. Каникулы", url: "7-bradbury.html" } ] }
+  ],
+  "6": [
+    { author: "Былины", works: [ { title: "Илья Муромец и Соловей-разбойник", url: "6-ilya.html" }, { title: "Садко", url: "6-sadko.html" }, { title: "Вольга и Микула", url: "6-volga.html" } ] },
+    { author: "Зарубежный эпос", works: [ { title: "Песнь о Роланде", url: "6-roland.html" }, { title: "Песнь о Нибелунгах", url: "6-nibelungs.html" } ] },
+    { author: "Древнерусская литература", works: [ { title: "Сказание о белгородском киселе", url: "6-kissel.html" }, { title: "Сказания о Вещем Олеге", url: "6-oleg.html" } ] },
+    { author: "Народная баллада", works: [ { title: "Аника-воин", url: "6-anika.html" } ] },
+    { author: "А.С. Пушкин", works: [ { title: "Дубровский", url: "6-dubrovsky.html" } ] },
+    { author: "И.С. Тургенев", works: [ { title: "Бежин луг", url: "6-bezhin.html" } ] },
+    { author: "Н.С. Лесков", works: [ { title: "Левша", url: "6-levsha.html" } ] },
+    { author: "Л.Н. Толстой", works: [ { title: "Детство", url: "6-childhood.html" } ] },
+    { author: "А.П. Чехов", works: [ { title: "Толстый и тонкий. Хамелеон...", url: "6-chekhov.html" } ] },
+    { author: "А.И. Куприн", works: [ { title: "Чудесный доктор", url: "6-kuprin-doktor.html" } ] },
+    { author: "Р.И. Фраерман", works: [ { title: "Дикая собака Динго", url: "6-dingo.html" } ] },
+    { author: "Э.Н. Веркин", works: [ { title: "Облачный полк", url: "6-verkin.html" } ] },
+    { author: "Д. Дефо", works: [ { title: "Робинзон Крузо", url: "6-defoe.html" } ] },
+    { author: "Дж. Свифт", works: [ { title: "Путешествия Гулливера", url: "6-swift.html" } ] }
+  ],
+  "5": [
+    { author: "Н. Кун", works: [ { title: "Мифы Древней Греции", url: "5-kun.html" } ] },
+    { author: "Геродот", works: [ { title: "Легенда об Арионе", url: "5-arion.html" } ] },
+    { author: "Русские народные сказки", works: [ { title: "Царевна-лягушка", url: "5-frog.html" }, { title: "Журавль и цапля", url: "5-crane.html" }, { title: "Солдатская шинель", url: "5-shinel.html" } ] },
+    { author: "А.П. Сумароков", works: [ { title: "Кокушка", url: "5-kokushka.html" } ] },
+    { author: "И.И. Дмитриев", works: [ { title: "Муха", url: "5-fly.html" } ] },
+    { author: "И.А. Крылов", works: [ { title: "Волк на псарне", url: "5-wolf.html" }, { title: "Свинья под Дубом", url: "5-pig.html" }, { title: "Квартет", url: "5-quartet.html" }, { title: "Осёл и Соловей", url: "5-donkey.html" }, { title: "Ворона и Лисица", url: "5-crow.html" } ] },
+    { author: "А.С. Пушкин", works: [ { title: "Сказка о мёртвой царевне...", url: "5-pushkin.html" } ] },
+    { author: "М.Ю. Лермонтов", works: [ { title: "Бородино", url: "5-lermontov.html" } ] },
+    { author: "Н.В. Гоголь", works: [ { title: "Ночь перед Рождеством", url: "5-gogol-night.html" }, { title: "Заколдованное место", url: "5-gogol-place.html" } ] },
+    { author: "И.С. Тургенев", works: [ { title: "Муму", url: "5-mumu.html" } ] },
+    { author: "Н.А. Некрасов", works: [ { title: "Мороз, Красный нос", url: "5-nekrasov.html" } ] },
+    { author: "Л.Н. Толстой", works: [ { title: "Кавказский пленник", url: "5-tolstoy.html" } ] },
+    { author: "А.П. Чехов", works: [ { title: "Лошадиная фамилия", url: "5-chekhov.html" } ] },
+    { author: "М.М. Зощенко", works: [ { title: "Золотые слова", url: "5-zoshchenko.html" } ] },
+    { author: "А.И. Куприн", works: [ { title: "Белый пудель", url: "5-kuprin.html" }, { title: "Тапёр", url: "5-kuprin-taper.html" } ] },
+    { author: "М.М. Пришвин", works: [ { title: "Кладовая солнца", url: "5-prishvin.html" } ] },
+    { author: "К.Г. Паустовский", works: [ { title: "Заячьи лапы", url: "5-paustovsky.html" } ] },
+    { author: "А.П. Платонов", works: [ { title: "Никита", url: "5-platonov.html" } ] },
+    { author: "В.П. Астафьев", works: [ { title: "Васюткино озеро", url: "5-astafiev.html" } ] },
+    { author: "П.П. Бажов", works: [ { title: "Медной горы Хозяйка", url: "5-bazhov.html" } ] },
+    { author: "С.Я. Маршак", works: [ { title: "Двенадцать месяцев", url: "5-marshak.html" } ] },
+    { author: "М. Твен", works: [ { title: "Приключения Тома Сойера", url: "5-twain.html" } ] },
+    { author: "Л. Кэрролл", works: [ { title: "Алиса в Стране чудес", url: "5-carroll.html" } ] },
+    { author: "Р.Л. Стивенсон", works: [ { title: "Вересковый мёд", url: "5-stevenson.html" } ] },
+    { author: "Дж. Лондон", works: [ { title: "Сказание о Кише", url: "5-london.html" } ] }
+  ]
+};
+
+/* ============================================================
+   Отрисовка меню
+   ============================================================ */
+function buildMenu() {
+  const nav = document.getElementById('menuNav');
+  if (!nav) return;
+  Object.keys(PROGRAM).forEach(classNum => {
+    const block = document.createElement('div');
+    block.className = 'class-block';
+    const btn = document.createElement('button');
+    btn.className = 'class-btn';
+    btn.textContent = `${classNum}й класс`;
+    block.appendChild(btn);
+    const body = document.createElement('div');
+    body.className = 'class-body';
+    PROGRAM[classNum].forEach(authorObj => {
+      const aBlock = document.createElement('div');
+      aBlock.className = 'author-block';
+      const aBtn = document.createElement('button');
+      aBtn.className = 'author-btn';
+      aBtn.textContent = authorObj.author;
+      aBlock.appendChild(aBtn);
+      const aBody = document.createElement('div');
+      aBody.className = 'author-body';
+      authorObj.works.forEach(w => {
+        const a = document.createElement('a');
+        a.className = 'work-link';
+        a.href = w.url;
+        a.textContent = w.title;
+        aBody.appendChild(a);
+      });
+      aBlock.appendChild(aBody);
+      body.appendChild(aBlock);
+      aBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wasOpen = aBlock.classList.contains('open');
+        body.querySelectorAll('.author-block').forEach(b => b.classList.remove('open'));
+        if (!wasOpen) aBlock.classList.add('open');
+      });
+    });
+    const allLink = document.createElement('a');
+    allLink.className = 'all-program';
+    allLink.href = `test.html?class=${classNum}`;
+    allLink.textContent = 'Вся программа';
+    body.appendChild(allLink);
+    block.appendChild(body);
+    nav.appendChild(block);
+    btn.addEventListener('click', () => {
+      const wasOpen = block.classList.contains('open');
+      nav.querySelectorAll('.class-block').forEach(b => b.classList.remove('open'));
+      if (!wasOpen) block.classList.add('open');
+    });
+  });
+}
+
+/* ============================================================
+   Аккордеоны разделов
+   ============================================================ */
+function initSections() {
+  document.querySelectorAll('.section-block').forEach(block => {
+    const btn = block.querySelector('.section-btn');
+    if (!btn) return;
+    btn.addEventListener('click', () => block.classList.toggle('open'));
+  });
+}
+
+/* ============================================================
+   ЗАМЕНИ МАССИВ QUIZ НА ВОПРОСЫ КОНКРЕТНОГО ПРОИЗВЕДЕНИЯ
+   ============================================================ */
+const QUIZ = [
+  { q: "Кого принес Ваня домой к деду?", options: ["Котенка", "Зайца", "Щенка", "Птицу"], correct: 1 },
+  { q: "Что случилось с зайцем?", options: ["Он утонул", "У него были обожжены лапы и рваное ухо", "Его укусила собака", "Он попал в капкан"], correct: 1 },
+  { q: "Кто отказался лечить зайца?", options: ["Доктор Карл Петрович", "Ветеринар", "Аптекарь", "Бабка Анисья"], correct: 1 },
+  { q: "Как заяц спас деда Лариона?", options: ["Вывел из леса", "Спас от волка", "Спас от лесного пожара", "Принес еду"], correct: 2 },
+  { q: "Кто в итоге вылечил зайца?", options: ["Ветеринар", "Доктор Карл Петрович", "Ваня", "Дед Ларион"], correct: 1 }
+];
+
+function renderQuiz() {
+  const box = document.getElementById('quiz');
+  if (!box) return;
+  box.innerHTML = QUIZ.map((item, qi) => `
+    <div class="quiz-question" data-q="${qi}">
+      <div class="quiz-q-num">Вопрос ${qi + 1} из ${QUIZ.length}</div>
+      <div class="quiz-q-text">${item.q}</div>
+      <div class="quiz-options">
+        ${item.options.map((opt, oi) => `
+          <label class="quiz-option" data-o="${oi}">
+            <input type="radio" name="q${qi}" value="${oi}">
+            <span class="radio"></span>
+            <span>${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+  box.querySelectorAll('.quiz-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (opt.classList.contains('disabled')) return;
+      const parent = opt.closest('.quiz-question');
+      parent.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      opt.querySelector('input').checked = true;
+    });
+  });
+}
+
+function checkQuiz() {
+  let correctCount = 0;
+  document.querySelectorAll('.quiz-question').forEach((qBlock, qi) => {
+    const selected = qBlock.querySelector('.quiz-option.selected');
+    const correctIdx = QUIZ[qi].correct;
+    qBlock.classList.remove('correct', 'incorrect');
+    qBlock.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('correct', 'incorrect'));
+    const correctOpt = qBlock.querySelector(`.quiz-option[data-o="${correctIdx}"]`);
+    correctOpt.classList.add('correct');
+    if (selected) {
+      const selectedIdx = parseInt(selected.dataset.o);
+      if (selectedIdx === correctIdx) { correctCount++; qBlock.classList.add('correct'); }
+      else { selected.classList.add('incorrect'); qBlock.classList.add('incorrect'); }
+    } else { qBlock.classList.add('incorrect'); }
+    qBlock.querySelectorAll('.quiz-option').forEach(o => o.classList.add('disabled'));
+  });
+  const result = document.getElementById('quizResult');
+  result.classList.remove('good', 'mid', 'bad');
+  result.classList.add('show');
+  const score = Math.round((correctCount / QUIZ.length) * 100);
+  if (correctCount >= Math.ceil(QUIZ.length * 0.7)) {
+    result.classList.add('good');
+    result.innerHTML = `Отлично! Правильных ответов: ${correctCount} из ${QUIZ.length} (${score}%)`;
+  } else if (correctCount >= Math.ceil(QUIZ.length * 0.4)) {
+    result.classList.add('mid');
+    result.innerHTML = `Хорошо! Правильных ответов: ${correctCount} из ${QUIZ.length} (${score}%)<small>Есть над чем поработать.</small>`;
+  } else {
+    result.classList.add('bad');
+    result.innerHTML = `Правильных ответов: ${correctCount} из ${QUIZ.length} (${score}%)<small>Стоит перечитать текст.</small>`;
+  }
+}
+
+function resetQuiz() {
+  document.querySelectorAll('.quiz-question').forEach(qBlock => {
+    qBlock.classList.remove('correct', 'incorrect');
+    qBlock.querySelectorAll('.quiz-option').forEach(o => {
+      o.classList.remove('selected', 'correct', 'incorrect', 'disabled');
+      o.querySelector('input').checked = false;
+    });
+  });
+  const result = document.getElementById('quizResult');
+  result.classList.remove('show', 'good', 'mid', 'bad');
+  result.innerHTML = '';
+  document.querySelector('.test-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ============================================================
+   Инициализация
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', () => {
+  buildMenu();
+  initSections();
+  renderQuiz();
+
+  const burger  = document.getElementById('burger');
+  const drawer  = document.getElementById('drawer');
+  const overlay = document.getElementById('overlay');
+
+  if (burger && drawer && overlay) {
+    const openDrawer  = () => { drawer.classList.add('open'); overlay.classList.add('show'); burger.classList.add('active'); };
+    const closeDrawer = () => { drawer.classList.remove('open'); overlay.classList.remove('show'); burger.classList.remove('active'); };
+    burger.addEventListener('click', () => drawer.classList.contains('open') ? closeDrawer() : openDrawer());
+    overlay.addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDrawer(); });
+  }
+
+  if (document.getElementById('checkBtn')) document.getElementById('checkBtn').addEventListener('click', checkQuiz);
+  if (document.getElementById('resetBtn')) document.getElementById('resetBtn').addEventListener('click', resetQuiz);
+});
+</script>
+</body>
+</html>
