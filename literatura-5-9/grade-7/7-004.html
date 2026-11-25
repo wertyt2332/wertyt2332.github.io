@@ -1,0 +1,522 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Песня про царя Ивана Васильевича, молодого опричника и удалого купца Калашникова — М. Ю. Лермонтов</title><style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  :root {
+    --bg: #f7f5f0;
+    --text: #1c1c1c;
+    --muted: #6b6b6b;
+    --accent: #8a6d3b;
+    --border: #e0dcd3;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --ease: cubic-bezier(0.4, 0, 0.2, 1);
+    --header-h: 70px;
+    --green: #2e7d32;
+    --green-bg: #e8f5e9;
+    --red: #c62828;
+    --red-bg: #ffebee;
+  }
+
+  html, body { height: 100%; }
+  body {
+    font-family: "Georgia", "Times New Roman", serif;
+    background: var(--bg); color: var(--text);
+    overflow-x: hidden;
+    animation: pageFadeIn 0.6s ease both;
+  }
+  @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ===== ШАПКА (ТЕПЕРЬ ТОЛЬКО .site-header) ===== */
+  .site-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px;
+    background: rgba(247, 245, 240, 0.9);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    z-index: 100;
+  }
+  .burger {
+    width: 42px; height: 42px;
+    border: none; background: transparent; cursor: pointer;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    gap: 5px; border-radius: 6px;
+    transition: background 0.25s var(--ease);
+  }
+  .burger:hover { background: rgba(0, 0, 0, 0.05); }
+  .burger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--text);
+    transition: transform 0.35s var(--ease), opacity 0.25s var(--ease);
+  }
+  .burger.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burger.active span:nth-child(2) { opacity: 0; }
+  .burger.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+  .site-title {
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 1px; text-transform: uppercase;
+    cursor: pointer; user-select: none;
+    color: var(--text); text-decoration: none;
+    transition: color 0.25s var(--ease);
+    white-space: nowrap;
+  }
+  .site-title:hover { color: var(--accent); }
+
+  .home-btn {
+    width: 42px; height: 42px;
+    border: none; background: transparent; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; color: var(--text); text-decoration: none;
+    transition: background 0.25s var(--ease), transform 0.25s var(--ease);
+    flex-shrink: 0;
+  }
+  .home-btn:hover { background: rgba(0, 0, 0, 0.05); transform: scale(1.08); }
+  .home-btn:active { transform: scale(0.94); }
+  .home-btn svg {
+    width: 22px; height: 22px;
+    stroke: var(--text); fill: none;
+    stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+    transition: stroke 0.25s var(--ease);
+  }
+  .home-btn:hover svg { stroke: var(--accent); }
+
+  /* ===== ШТОРКА ===== */
+  .drawer {
+    position: fixed; top: 0; left: 0;
+    width: 320px; max-width: 88vw; height: 100%;
+    background: #ffffff;
+    box-shadow: var(--shadow);
+    transform: translateX(-100%);
+    transition: transform 0.4s var(--ease);
+    z-index: 200;
+    display: flex; flex-direction: column;
+    padding: calc(var(--header-h) + 20px) 0 24px 0;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer nav { flex: 1; overflow-y: auto; padding-bottom: 12px; }
+
+  .class-block { position: relative; }
+  .class-btn {
+    width: 100%; display: block; padding: 18px 32px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 18px; color: var(--text);
+    text-align: left; position: relative;
+    border-bottom: 1px solid var(--border);
+    transition: color 0.3s var(--ease), padding-left 0.35s var(--ease), background 0.3s var(--ease);
+  }
+  .class-btn::before {
+    content: ""; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--accent);
+    transform: scaleY(0); transform-origin: center;
+    transition: transform 0.35s var(--ease);
+  }
+  .class-btn:hover { color: var(--accent); padding-left: 42px; background: var(--bg); }
+  .class-btn:hover::before,
+  .class-block.open > .class-btn::before { transform: scaleY(1); }
+  .class-block.open > .class-btn { color: var(--accent); background: var(--bg); }
+
+  .class-body {
+    max-height: 0; overflow: hidden; background: #fbfaf7;
+    transition: max-height 0.45s var(--ease);
+  }
+  .class-block.open > .class-body { max-height: 3000px; }
+
+  .author-block { position: relative; }
+  .author-btn {
+    width: 100%; display: block; padding: 13px 24px 13px 46px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 16px; color: var(--muted);
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: color 0.3s var(--ease), padding-left 0.35s var(--ease), background 0.3s var(--ease);
+  }
+  .author-btn::before {
+    content: ""; position: absolute;
+    left: 32px; top: 50%;
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--muted);
+    transform: translateY(-50%) scale(0.7);
+    transition: background 0.3s var(--ease), transform 0.3s var(--ease);
+  }
+  .author-btn:hover { color: var(--accent); padding-left: 54px; background: rgba(0, 0, 0, 0.02); }
+  .author-btn:hover::before { background: var(--accent); transform: translateY(-50%) scale(1); }
+  .author-block.open > .author-btn { color: var(--accent); font-weight: 600; background: rgba(138, 109, 59, 0.05); }
+  .author-block.open > .author-btn::before { background: var(--accent); transform: translateY(-50%) scale(1); }
+
+  .author-body {
+    max-height: 0; overflow: hidden; background: #ffffff;
+    transition: max-height 0.4s var(--ease);
+  }
+  .author-block.open > .author-body { max-height: 1000px; }
+
+  .work-link {
+    display: block; padding: 10px 24px 10px 66px;
+    font-size: 15px; color: var(--text);
+    text-decoration: none; position: relative;
+    transition: color 0.25s var(--ease), background 0.25s var(--ease), padding-left 0.3s var(--ease);
+  }
+  .work-link::before {
+    content: ""; position: absolute;
+    left: 50px; top: 50%;
+    width: 6px; height: 1px; background: var(--muted);
+    transition: width 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  .work-link:hover { color: var(--accent); background: rgba(138, 109, 59, 0.06); padding-left: 72px; }
+  .work-link:hover::before { width: 12px; background: var(--accent); }
+
+  .all-program {
+    display: block; margin: 14px 24px 18px 32px; padding: 13px 16px;
+    background: var(--text); color: #fff;
+    font-size: 12px; letter-spacing: 1.4px;
+    text-transform: uppercase; text-align: center;
+    text-decoration: none; border-radius: 6px;
+    transition: background 0.3s var(--ease), transform 0.25s var(--ease);
+  }
+  .all-program:hover { background: var(--accent); transform: translateY(-1px); }
+
+  .drawer .contacts { padding: 16px 24px 0 24px; border-top: 1px solid var(--border); }
+  .drawer .contacts a {
+    display: block; text-align: center; padding: 14px;
+    background: transparent; color: var(--text);
+    text-decoration: none; font-size: 15px;
+    letter-spacing: 1px; text-transform: uppercase;
+    border: 1px solid var(--border); border-radius: 6px;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease), border-color 0.3s var(--ease);
+  }
+  .drawer .contacts a:hover { background: var(--bg); color: var(--accent); border-color: var(--accent); }
+
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.35s var(--ease), visibility 0.35s var(--ease);
+    z-index: 150;
+    backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
+  }
+  .overlay.show { opacity: 1; visibility: visible; }
+
+  /* ===== КОНТЕНТ СТАТЬИ ===== */
+  main.article-page {
+    padding: calc(var(--header-h) + 40px) 20px 80px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .article-header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fadeUp 0.9s var(--ease) 0.1s both;
+    padding: 0 4px;
+  }
+  .article-author {
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+  }
+  .article-title {
+    font-size: clamp(26px, 5.5vw, 52px);
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 1.15;
+    margin: 0 auto 14px auto;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: auto;
+    animation: titleIn 1s var(--ease) 0.2s both;
+  }
+  @keyframes titleIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  .article-meta {
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 1px;
+    margin-bottom: 26px;
+    overflow-wrap: anywhere;
+    padding: 0 4px;
+  }
+  .divider {
+    width: 60px; height: 2px;
+    background: var(--accent);
+    margin: 0 auto 40px auto;
+    animation: dividerGrow 0.8s var(--ease) 0.4s both;
+  }
+  @keyframes dividerGrow { from { width: 0; } to { width: 60px; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ===== АККОРДЕОНЫ РАЗДЕЛОВ ===== */
+  .article-sections {
+    display: flex; flex-direction: column; gap: 10px;
+    width: 100%;
+  }
+
+  .section-block {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    animation: fadeUp 0.7s var(--ease) both;
+    transition: box-shadow 0.3s var(--ease);
+    width: 100%;
+  }
+  .section-block:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.05); }
+  .section-block:nth-child(1) { animation-delay: 0.3s; }
+  .section-block:nth-child(2) { animation-delay: 0.35s; }
+  .section-block:nth-child(3) { animation-delay: 0.4s; }
+  .section-block:nth-child(4) { animation-delay: 0.45s; }
+  .section-block:nth-child(5) { animation-delay: 0.5s; }
+  .section-block:nth-child(6) { animation-delay: 0.55s; }
+  .section-block:nth-child(7) { animation-delay: 0.6s; }
+  .section-block:nth-child(8) { animation-delay: 0.65s; }
+  .section-block:nth-child(9) { animation-delay: 0.7s; }
+  .section-block:nth-child(10) { animation-delay: 0.75s; }
+  .section-block:nth-child(11) { animation-delay: 0.8s; }
+  .section-block:nth-child(12) { animation-delay: 0.85s; }
+
+  .section-btn {
+    width: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px;
+    padding: 18px 24px;
+    background: none; border: none; cursor: pointer;
+    font-family: inherit; font-size: 17px; font-weight: 600;
+    color: var(--text); text-align: left;
+    transition: background 0.3s var(--ease), color 0.3s var(--ease);
+    overflow-wrap: anywhere;
+  }
+  .section-btn > span,
+  .section-btn > :first-child { flex: 1; min-width: 0; }
+  .section-btn:hover { background: var(--bg); color: var(--accent); }
+  .section-btn::after {
+    content: "+";
+    font-size: 22px; color: var(--muted); font-weight: 400;
+    transition: color 0.3s var(--ease);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .section-block.open > .section-btn { color: var(--accent); background: var(--bg); }
+  .section-block.open > .section-btn::after { content: "−"; color: var(--accent); }
+
+  .section-body {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 24px;
+    line-height: 1.75;
+    font-size: 16px;
+    color: #333;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    transition: max-height 0.5s var(--ease), padding 0.4s var(--ease);
+  }
+  .section-block.open > .section-body {
+    max-height: 4000px;
+    padding: 4px 24px 22px 24px;
+  }
+  .section-body p + p { margin-top: 12px; }
+  .section-body strong { color: var(--text); }
+  .section-body ul { margin: 10px 0 10px 20px; }
+  .section-body li { margin-bottom: 8px; }
+  .section-body h4 {
+    color: var(--accent); font-size: 15px;
+    letter-spacing: 1px; text-transform: uppercase;
+    margin: 16px 0 8px 0; font-weight: 600;
+  }
+  .section-body h4:first-child { margin-top: 0; }
+  .section-body .quote {
+    display: block;
+    border-left: 3px solid var(--accent);
+    padding-left: 16px; margin: 12px 0;
+    color: #555; font-style: italic;
+  }
+  .section-body .hero-card {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    overflow-wrap: anywhere;
+  }
+  .section-body .hero-card:last-child { margin-bottom: 0; }
+  .section-body .hero-card h4 { margin-top: 0; }
+
+  /* ===== ТЕСТ ===== */
+  .test-section {
+    margin-top: 60px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.9s var(--ease) 0.9s both;
+    width: 100%;
+  }
+  .test-header { text-align: center; margin-bottom: 32px; }
+  .test-title {
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+  }
+  .test-subtitle {
+    color: var(--muted); font-size: 14px;
+    letter-spacing: 1px;
+    overflow-wrap: anywhere;
+  }
+
+  .quiz-question {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    width: 100%;
+    transition: border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  }
+  .quiz-question.correct { border-color: var(--green); box-shadow: 0 0 0 2px var(--green-bg); }
+  .quiz-question.incorrect { border-color: var(--red); box-shadow: 0 0 0 2px var(--red-bg); }
+
+  .quiz-q-num {
+    font-size: 12px; color: var(--accent);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 6px;
+    overflow-wrap: anywhere;
+  }
+  .quiz-q-text {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    line-height: 1.45;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+  }
+
+  .quiz-options {
+    display: flex; flex-direction: column; gap: 8px;
+    width: 100%;
+  }
+  .quiz-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  }
+  .quiz-option > span:last-child {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+  }
+  .quiz-option:hover { background: var(--bg); border-color: var(--accent); }
+  .quiz-option input { display: none; }
+  .quiz-option .radio {
+    width: 18px; height: 18px;
+    border: 2px solid var(--muted);
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    margin-top: 2px;
+    transition: border-color 0.2s var(--ease);
+  }
+  .quiz-option.selected { background: rgba(138,109,59,0.08); border-color: var(--accent); }
+  .quiz-option.selected .radio { border-color: var(--accent); }
+  .quiz-option.selected .radio::after {
+    content: ""; position: absolute;
+    inset: 3px; background: var(--accent);
+    border-radius: 50%;
+  }
+  .quiz-option.correct { background: var(--green-bg); border-color: var(--green); }
+  .quiz-option.correct .radio { border-color: var(--green); }
+  .quiz-option.correct .radio::after { background: var(--green); }
+  .quiz-option.incorrect { background: var(--red-bg); border-color: var(--red); }
+  .quiz-option.incorrect .radio { border-color: var(--red); }
+  .quiz-option.incorrect .radio::after { background: var(--red); }
+  .quiz-option.disabled { cursor: default; }
+
+  .quiz-actions {
+    display: flex; gap: 12px; justify-content: center;
+    margin-top: 28px; flex-wrap: wrap;
+  }
+  .quiz-btn {
+    padding: 13px 28px;
+    border: none; border-radius: 8px;
+    font-family: inherit; font-size: 14px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.3s var(--ease), transform 0.2s var(--ease);
+  }
+  .quiz-btn-primary { background: var(--text); color: #fff; }
+  .quiz-btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+  .quiz-btn-secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .quiz-btn-secondary:hover { background: var(--bg); border-color: var(--accent); color: var(--accent); }
+
+  .quiz-result {
+    margin-top: 24px;
+    padding: 18px 22px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 17px; font-weight: 600;
+    opacity: 0; transform: translateY(-6px);
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+    overflow-wrap: anywhere;
+  }
+  .quiz-result.show { opacity: 1; transform: translateY(0); }
+  .quiz-result.good { background: var(--green-bg); color: var(--green); }
+  .quiz-result.mid  { background: #fff8e1; color: #b26a00; }
+  .quiz-result.bad  { background: var(--red-bg); color: var(--red); }
+  .quiz-result small { display: block; font-size: 13px; font-weight: 400; margin-top: 4px; opacity: 0.85; }
+
+  /* ===== АДАПТИВ ===== */
+  @media (max-width: 768px) {
+    .site-title { font-size: 15px; letter-spacing: 1px; }
+    main.article-page { padding: calc(var(--header-h) + 28px) 16px 60px 16px; }
+    .article-title { font-size: clamp(24px, 7vw, 38px); }
+    .article-meta { font-size: 13px; letter-spacing: 0.5px; }
+    .section-btn { padding: 16px 18px; font-size: 16px; }
+    .section-block.open > .section-body { padding: 4px 18px 18px 18px; }
+    .section-body { font-size: 15px; padding: 0 18px; }
+    .quiz-question { padding: 18px 16px; }
+    .quiz-q-text { font-size: 15px; }
+    .quiz-option { padding: 10px 12px; font-size: 14px; gap: 10px; }
+    .test-title { letter-spacing: 1px; }
+  }
+
+.source-text p{margin:0 0 12px;line-height:1.7}.source-text h4{margin:19px 0 8px;color:#8a6d3b}.quiz-option{font-family:inherit;text-align:left;background:#fff}.quiz-option.selected{background:rgba(138,109,59,.08)}.quiz-option.correct{background:#e8f5e9;border-color:#2e7d32}.quiz-option.incorrect{background:#ffebee;border-color:#c62828}.quiz-result{text-align:center;margin-top:18px;font-weight:700}.test-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}.site-title{font-size:clamp(13px,2.5vw,20px)}.section-body{overflow-wrap:anywhere}.article-meta{line-height:1.5}</style></head><body>
+<header class="site-header"><button class="burger" id="burger" type="button" aria-label="Открыть меню"><span></span><span></span><span></span></button><a class="site-title" href="../index.html">Литература · 7 класс</a><a class="home-btn" href="../index.html" aria-label="К списку"><svg viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5M5.5 9v11h13V9M9 20v-6h6v6"/></svg></a></header>
+<div class="overlay" id="overlay"></div><aside class="drawer" id="drawer"><nav><div class="class-block"><button class="class-btn" type="button">5 класс <span>(42)</span></button><div class="class-body"><a class="work-link" href="../grade-5/5-001.html">Мифы Древней Греции</a><a class="work-link" href="../grade-5/5-002.html">Легенда об Арионе</a><a class="work-link" href="../grade-5/5-003.html">Царевна-лягушка</a><a class="work-link" href="../grade-5/5-004.html">Журавль и цапля</a><a class="work-link" href="../grade-5/5-005.html">Солдатская шинель</a><a class="work-link" href="../grade-5/5-006.html">Кокушка</a><a class="work-link" href="../grade-5/5-007.html">Муха</a><a class="work-link" href="../grade-5/5-008.html">Волк на псарне</a><a class="work-link" href="../grade-5/5-009.html">Свинья под Дубом</a><a class="work-link" href="../grade-5/5-010.html">Квартет</a><a class="work-link" href="../grade-5/5-011.html">Осёл и Соловей</a><a class="work-link" href="../grade-5/5-012.html">Ворона и Лисица</a><a class="work-link" href="../grade-5/5-013.html">Сказка о мёртвой царевне и о семи богатырях</a><a class="work-link" href="../grade-5/5-014.html">Бородино</a><a class="work-link" href="../grade-5/5-015.html">Ночь перед Рождеством</a><a class="work-link" href="../grade-5/5-016.html">Заколдованное место</a><a class="work-link" href="../grade-5/5-017.html">Муму</a><a class="work-link" href="../grade-5/5-018.html">Мороз, Красный нос</a><a class="work-link" href="../grade-5/5-019.html">Кавказский пленник</a><a class="work-link" href="../grade-5/5-020.html">Лошадиная фамилия</a><a class="work-link" href="../grade-5/5-021.html">Мальчики</a><a class="work-link" href="../grade-5/5-022.html">Хирургия</a><a class="work-link" href="../grade-5/5-023.html">Галоша</a><a class="work-link" href="../grade-5/5-024.html">Лёля и Минька</a><a class="work-link" href="../grade-5/5-025.html">Ёлка</a><a class="work-link" href="../grade-5/5-026.html">Золотые слова</a><a class="work-link" href="../grade-5/5-027.html">Встреча</a><a class="work-link" href="../grade-5/5-028.html">Белый пудель</a><a class="work-link" href="../grade-5/5-029.html">Кладовая солнца</a><a class="work-link" href="../grade-5/5-030.html">Заячьи лапы</a><a class="work-link" href="../grade-5/5-031.html">Корова</a><a class="work-link" href="../grade-5/5-032.html">Никита</a><a class="work-link" href="../grade-5/5-033.html">Васюткино озеро</a><a class="work-link" href="../grade-5/5-034.html">Тапёр</a><a class="work-link" href="../grade-5/5-035.html">Хозяйка Медной горы</a><a class="work-link" href="../grade-5/5-036.html">Двенадцать месяцев</a><a class="work-link" href="../grade-5/5-037.html">Робинзон Крузо</a><a class="work-link" href="../grade-5/5-038.html">Снежная королева</a><a class="work-link" href="../grade-5/5-039.html">Приключения Тома Сойера</a><a class="work-link" href="../grade-5/5-040.html">Алиса в Стране чудес</a><a class="work-link" href="../grade-5/5-041.html">Вересковый мёд</a><a class="work-link" href="../grade-5/5-042.html">Сказание о Кише</a></div></div><div class="class-block"><button class="class-btn" type="button">6 класс <span>(21)</span></button><div class="class-body"><a class="work-link" href="../grade-6/6-001.html">Илья Муромец и Соловей-разбойник</a><a class="work-link" href="../grade-6/6-002.html">Садко</a><a class="work-link" href="../grade-6/6-003.html">Вольга и Микула Селянинович</a><a class="work-link" href="../grade-6/6-004.html">Песни о Роланде</a><a class="work-link" href="../grade-6/6-005.html">Песни о Нибелунгах</a><a class="work-link" href="../grade-6/6-006.html">Аника-воин</a><a class="work-link" href="../grade-6/6-007.html">Сказание о белгородском киселе</a><a class="work-link" href="../grade-6/6-008.html">Сказание о походе князя Олега на Царьград</a><a class="work-link" href="../grade-6/6-009.html">Предание о смерти князя Олега</a><a class="work-link" href="../grade-6/6-010.html">Дубровский</a><a class="work-link" href="../grade-6/6-011.html">Бежин луг</a><a class="work-link" href="../grade-6/6-012.html">Левша</a><a class="work-link" href="../grade-6/6-013.html">Детство</a><a class="work-link" href="../grade-6/6-014.html">Толстый и тонкий</a><a class="work-link" href="../grade-6/6-015.html">Хамелеон</a><a class="work-link" href="../grade-6/6-016.html">Смерть чиновника</a><a class="work-link" href="../grade-6/6-017.html">Чудесный доктор</a><a class="work-link" href="../grade-6/6-018.html">Дикая собака Динго, или Повесть о первой любви</a><a class="work-link" href="../grade-6/6-019.html">Облачный полк</a><a class="work-link" href="../grade-6/6-020.html">Робинзон Крузо</a><a class="work-link" href="../grade-6/6-021.html">Путешествия Гулливера</a></div></div><div class="class-block"><button class="class-btn" type="button">7 класс <span>(22)</span></button><div class="class-body"><a class="work-link" href="../grade-7/7-001.html">Поучение Владимира Мономаха</a><a class="work-link" href="../grade-7/7-002.html">Повесть о Петре и Февронии Муромских</a><a class="work-link" href="../grade-7/7-003.html">Повести Белкина</a><a class="work-link" href="../grade-7/7-004.html">Песня про царя Ивана Васильевича, молодого опричника и удалого купца Калашникова</a><a class="work-link" href="../grade-7/7-005.html">Тарас Бульба</a><a class="work-link" href="../grade-7/7-006.html">Бирюк</a><a class="work-link" href="../grade-7/7-007.html">Хорь и Калиныч</a><a class="work-link" href="../grade-7/7-008.html">После бала</a><a class="work-link" href="../grade-7/7-009.html">Размышления у парадного подъезда</a><a class="work-link" href="../grade-7/7-010.html">Железная дорога</a><a class="work-link" href="../grade-7/7-011.html">Хамелеон</a><a class="work-link" href="../grade-7/7-012.html">Злоумышленник</a><a class="work-link" href="../grade-7/7-013.html">Тоска</a><a class="work-link" href="../grade-7/7-014.html">Детство</a><a class="work-link" href="../grade-7/7-015.html">Старуха Изергиль. Легенда о Данко</a><a class="work-link" href="../grade-7/7-016.html">Юшка</a><a class="work-link" href="../grade-7/7-017.html">Кукла</a><a class="work-link" href="../grade-7/7-018.html">О чём плачут лошади</a><a class="work-link" href="../grade-7/7-019.html">Сказание о Кише</a><a class="work-link" href="../grade-7/7-020.html">Дары волхвов</a><a class="work-link" href="../grade-7/7-021.html">Каникулы</a><a class="work-link" href="../grade-7/7-022.html">Всё лето в один день</a></div></div><div class="class-block"><button class="class-btn" type="button">8 класс <span>(29)</span></button><div class="class-body"><a class="work-link" href="../grade-8/8-001.html">Житие Сергия Радонежского</a><a class="work-link" href="../grade-8/8-002.html">Житие протопопа Аввакума</a><a class="work-link" href="../grade-8/8-003.html">Шемякин суд</a><a class="work-link" href="../grade-8/8-004.html">Недоросль</a><a class="work-link" href="../grade-8/8-005.html">Капитанская дочка</a><a class="work-link" href="../grade-8/8-006.html">К Чаадаеву</a><a class="work-link" href="../grade-8/8-007.html">Анчар</a><a class="work-link" href="../grade-8/8-008.html">Моцарт и Сальери</a><a class="work-link" href="../grade-8/8-009.html">Мцыри</a><a class="work-link" href="../grade-8/8-010.html">Лирика М. Ю. Лермонтова</a><a class="work-link" href="../grade-8/8-011.html">Ревизор</a><a class="work-link" href="../grade-8/8-012.html">Шинель</a><a class="work-link" href="../grade-8/8-013.html">Наталья, боярская дочь</a><a class="work-link" href="../grade-8/8-014.html">Ася</a><a class="work-link" href="../grade-8/8-015.html">Первая любовь</a><a class="work-link" href="../grade-8/8-016.html">После бала</a><a class="work-link" href="../grade-8/8-017.html">Старый гений</a><a class="work-link" href="../grade-8/8-018.html">История одного города</a><a class="work-link" href="../grade-8/8-019.html">Человек в футляре</a><a class="work-link" href="../grade-8/8-020.html">Крыжовник</a><a class="work-link" href="../grade-8/8-021.html">О любви</a><a class="work-link" href="../grade-8/8-022.html">Василий Тёркин</a><a class="work-link" href="../grade-8/8-023.html">Судьба человека</a><a class="work-link" href="../grade-8/8-024.html">Фотография, на которой меня нет</a><a class="work-link" href="../grade-8/8-025.html">Сонеты Уильяма Шекспира</a><a class="work-link" href="../grade-8/8-026.html">Ромео и Джульетта</a><a class="work-link" href="../grade-8/8-027.html">Мещанин во дворянстве</a><a class="work-link" href="../grade-8/8-028.html">Путешествия Гулливера</a><a class="work-link" href="../grade-8/8-029.html">Айвенго</a></div></div><div class="class-block"><button class="class-btn" type="button">9 класс <span>(25)</span></button><div class="class-body"><a class="work-link" href="../grade-9/9-001.html">Слово о полку Игореве</a><a class="work-link" href="../grade-9/9-002.html">Оды и стихотворения М. В. Ломоносова</a><a class="work-link" href="../grade-9/9-003.html">Оды Г. Р. Державина</a><a class="work-link" href="../grade-9/9-004.html">Недоросль</a><a class="work-link" href="../grade-9/9-005.html">Горе от ума</a><a class="work-link" href="../grade-9/9-006.html">Евгений Онегин</a><a class="work-link" href="../grade-9/9-007.html">Лирика А. С. Пушкина</a><a class="work-link" href="../grade-9/9-008.html">Моцарт и Сальери</a><a class="work-link" href="../grade-9/9-009.html">Герой нашего времени</a><a class="work-link" href="../grade-9/9-010.html">Лирика М. Ю. Лермонтова</a><a class="work-link" href="../grade-9/9-011.html">Мёртвые души</a><a class="work-link" href="../grade-9/9-012.html">Бедность не порок</a><a class="work-link" href="../grade-9/9-013.html">Первая любовь</a><a class="work-link" href="../grade-9/9-014.html">Юность</a><a class="work-link" href="../grade-9/9-015.html">Белые ночи</a><a class="work-link" href="../grade-9/9-016.html">Студент</a><a class="work-link" href="../grade-9/9-017.html">Крыжовник</a><a class="work-link" href="../grade-9/9-018.html">Дама с собачкой</a><a class="work-link" href="../grade-9/9-019.html">Тёмные аллеи</a><a class="work-link" href="../grade-9/9-020.html">Собачье сердце</a><a class="work-link" href="../grade-9/9-021.html">Судьба человека</a><a class="work-link" href="../grade-9/9-022.html">Матрёнин двор</a><a class="work-link" href="../grade-9/9-023.html">Гамлет</a><a class="work-link" href="../grade-9/9-024.html">Божественная комедия</a><a class="work-link" href="../grade-9/9-025.html">Фауст</a></div></div></nav><div class="contacts"><a href="../index.html">Все произведения</a></div></aside>
+<main class="article-page"><header class="article-header"><div class="article-author">М. Ю. Лермонтов</div><h1 class="article-title">Песня про царя Ивана Васильевича, молодого опричника и удалого купца Калашникова</h1><div class="article-meta">7 класс · поэма</div><div class="divider"></div></header>
+<div class="article-sections"><div class="section-block"><button class="section-btn" type="button"><span>Литературный паспорт</span></button><div class="section-body"><p><strong>Автор / составитель:</strong> М. Ю. Лермонтов.</p><p><strong>Жанр:</strong> поэма.</p><p><strong>Класс:</strong> 7.</p><p><strong>О чём читать:</strong> при подготовке опирайтесь на полный текст и конкретные эпизоды из школьного издания. Для сборников, циклов и обозначенной в программе лирики точный состав текстов может зависеть от учебника.</p></div></div><div class="section-block"><button class="section-btn" type="button"><span>Краткое содержание и общий ход</span></button><div class="section-body"><p>Опричник Кирибеевич влюбляется в Алёну Дмитриевну и бесчестит её. Её муж, купец Калашников, вступает с Кирибеевичем в кулачный бой и убивает его, после чего принимает царскую кару, не раскрывая причин своего поступка.</p></div></div><div class="section-block"><button class="section-btn" type="button"><span>Герои и их особенности</span></button><div class="section-body"><p>Иван Грозный; Кирибеевич; Степан Калашников; Алёна Дмитриевна.</p></div></div><div class="section-block"><button class="section-btn" type="button"><span>Темы и идеи</span></button><div class="section-body"><p>честь; семья; правда и власть; личное достоинство; народная память.</p></div></div><div class="section-block"><button class="section-btn" type="button"><span>На что обратить внимание</span></button><div class="section-body"><p>Как поэма соединяет исторический сюжет, фольклорную форму и трагический конфликт?</p></div></div><div class="section-block"><button class="section-btn" type="button"><span>План анализа и вопросы к тексту</span></button><div class="section-body"><p><strong>План.</strong> 1. Определите тему и жанр. 2. Сформулируйте основной конфликт. 3. Проследите ключевые эпизоды. 4. Охарактеризуйте героев по поступкам и речи. 5. Объясните смысл названия и финала. 6. Подкрепите вывод цитатой или точным эпизодом.</p><p><strong>Вопросы.</strong> Что меняет ход событий? Какой выбор делает главный герой? Что одобряет или осуждает автор? Как название связано с основной мыслью?</p></div></div></div>
+<section class="test-section"><div class="test-header"><h2 class="test-title">Проверь себя</h2><div class="test-subtitle">5 вопросов по литературному паспорту и содержанию</div></div><div class="quiz-question" data-correct="2"><div class="quiz-q-num">Вопрос 1</div><div class="quiz-q-text">Кто является автором или составителем произведения?</div><div class="quiz-options"><button class="quiz-option" type="button" data-index="0"><span class="radio"></span><span>А. С. Пушкин</span></button><button class="quiz-option" type="button" data-index="1"><span class="radio"></span><span>Н. В. Гоголь</span></button><button class="quiz-option" type="button" data-index="2"><span class="radio"></span><span>М. Ю. Лермонтов</span></button><button class="quiz-option" type="button" data-index="3"><span class="radio"></span><span>И. С. Тургенев</span></button></div></div><div class="quiz-question" data-correct="0"><div class="quiz-q-num">Вопрос 2</div><div class="quiz-q-text">Как определяется жанр произведения в этой карточке?</div><div class="quiz-options"><button class="quiz-option" type="button" data-index="0"><span class="radio"></span><span>поэма</span></button><button class="quiz-option" type="button" data-index="1"><span class="radio"></span><span>роман</span></button><button class="quiz-option" type="button" data-index="2"><span class="radio"></span><span>комедия</span></button><button class="quiz-option" type="button" data-index="3"><span class="radio"></span><span>лирическое стихотворение</span></button></div></div><div class="quiz-question" data-correct="3"><div class="quiz-q-num">Вопрос 3</div><div class="quiz-q-text">Какая тема особенно важна для анализа произведения?</div><div class="quiz-options"><button class="quiz-option" type="button" data-index="0"><span class="radio"></span><span>погода и времена года</span></button><button class="quiz-option" type="button" data-index="1"><span class="radio"></span><span>случайная бытовая деталь</span></button><button class="quiz-option" type="button" data-index="2"><span class="radio"></span><span>описание внешности без связи с идеей</span></button><button class="quiz-option" type="button" data-index="3"><span class="radio"></span><span>честь</span></button></div></div><div class="quiz-question" data-correct="1"><div class="quiz-q-num">Вопрос 4</div><div class="quiz-q-text">На что прежде всего следует обратить внимание при чтении?</div><div class="quiz-options"><button class="quiz-option" type="button" data-index="0"><span class="radio"></span><span>Только на биографию автора, не читая текст.</span></button><button class="quiz-option" type="button" data-index="1"><span class="radio"></span><span>Как поэма соединяет исторический сюжет, фольклорную форму и трагический конфликт?</span></button><button class="quiz-option" type="button" data-index="2"><span class="radio"></span><span>Только на количество страниц.</span></button><button class="quiz-option" type="button" data-index="3"><span class="radio"></span><span>Только на второстепенные детали.</span></button></div></div><div class="quiz-question" data-correct="2"><div class="quiz-q-num">Вопрос 5</div><div class="quiz-q-text">Какой способ работы поможет подготовить аргумент по этому произведению?</div><div class="quiz-options"><button class="quiz-option" type="button" data-index="0"><span class="radio"></span><span>Пересказать заглавие без анализа.</span></button><button class="quiz-option" type="button" data-index="1"><span class="radio"></span><span>Заменить текст общим мнением.</span></button><button class="quiz-option" type="button" data-index="2"><span class="radio"></span><span>Подтвердить вывод конкретным эпизодом и объяснить его значение.</span></button><button class="quiz-option" type="button" data-index="3"><span class="radio"></span><span>Игнорировать поступки персонажей.</span></button></div></div><div class="test-actions"><button class="quiz-btn" id="checkBtn" type="button">Проверить ответы</button><button class="quiz-btn secondary" id="resetBtn" type="button">Сбросить</button></div><div class="quiz-result" id="quizResult" aria-live="polite"></div></section>
+</main><script>
+const drawer=document.getElementById('drawer'),overlay=document.getElementById('overlay'),burger=document.getElementById('burger');
+function closeMenu(){drawer.classList.remove('open');overlay.classList.remove('show');burger.classList.remove('active')}
+burger.addEventListener('click',()=>{drawer.classList.toggle('open');overlay.classList.toggle('show');burger.classList.toggle('active')});overlay.addEventListener('click',closeMenu);
+document.querySelectorAll('.class-btn').forEach(b=>b.addEventListener('click',()=>b.parentElement.classList.toggle('open')));
+document.querySelectorAll('.section-btn').forEach(b=>b.addEventListener('click',()=>{const block=b.parentElement;block.classList.toggle('open');const body=block.querySelector('.section-body');body.style.maxHeight=block.classList.contains('open')?(body.scrollHeight+30)+'px':'0px'}));
+document.querySelectorAll('.quiz-question').forEach(q=>{q.querySelectorAll('.quiz-option').forEach(opt=>opt.addEventListener('click',()=>{if(q.classList.contains('locked'))return;q.querySelectorAll('.quiz-option').forEach(x=>x.classList.remove('selected'));opt.classList.add('selected')}))});
+document.getElementById('checkBtn').addEventListener('click',()=>{let score=0,answered=0;document.querySelectorAll('.quiz-question').forEach(q=>{const selected=q.querySelector('.quiz-option.selected');q.classList.add('locked');if(selected){answered++;const ok=Number(selected.dataset.index)===Number(q.dataset.correct);if(ok)score++;selected.classList.add(ok?'correct':'incorrect')}const right=q.querySelectorAll('.quiz-option')[Number(q.dataset.correct)];right.classList.add('correct')});document.getElementById('quizResult').textContent=`Результат: ${score} из 5. Отвечено: ${answered}.`});
+document.getElementById('resetBtn').addEventListener('click',()=>{document.querySelectorAll('.quiz-question').forEach(q=>{q.classList.remove('locked');q.querySelectorAll('.quiz-option').forEach(x=>x.classList.remove('selected','correct','incorrect'))});document.getElementById('quizResult').textContent=''});
+</script></body></html>
