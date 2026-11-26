@@ -52,6 +52,7 @@
   .drawer .contacts { padding: 16px 24px 0 24px; border-top: 1px solid var(--border); }
   .drawer .contacts a { display: block; text-align: center; padding: 14px; background: transparent; color: var(--text); text-decoration: none; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 6px; transition: 0.3s; }
   .drawer .contacts a:hover { background: var(--bg); color: var(--accent); border-color: var(--accent); }
+  .drawer .contacts a + a { margin-top: 8px; }
   .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); opacity: 0; visibility: hidden; transition: 0.35s; z-index: 150; backdrop-filter: blur(2px); }
   .overlay.show { opacity: 1; visibility: visible; }
 
@@ -104,7 +105,10 @@
 
   <aside class="drawer" id="drawer">
     <nav id="menuNav"></nav>
-    <div class="contacts"><a href="contacs.html">Контакты</a></div>
+    <div class="contacts">
+      <a href="contacs.html">Контакты</a>
+      <a href="reviews.html">Отзывы</a>
+    </div>
   </aside>
   <div class="overlay" id="overlay"></div>
 
