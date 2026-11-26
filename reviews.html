@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f5f0">
+  <title>Отзывы — ЧТИВО</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg: #f7f5f0;
+      --text: #1c1c1c;
+      --muted: #6b6b6b;
+      --accent: #8a6d3b;
+      --border: #e0dcd3;
+      --shadow: 0 10px 30px rgba(0,0,0,0.08);
+      --ease: cubic-bezier(0.4,0,0.2,1);
+    }
+    html { min-height: 100%; }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: Georgia, serif;
+      animation: fadeIn .5s ease both;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: rgba(247,245,240,.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .site-title {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .site-title:hover, .back-link:hover { color: var(--accent); }
+    .back-link {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 15px;
+      transition: color .2s ease;
+    }
+    main {
+      width: min(920px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 56px 0 72px;
+    }
+    .intro { text-align: center; margin-bottom: 34px; }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(36px, 7vw, 58px);
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      max-width: 620px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.65;
+    }
+    .panel {
+      padding: clamp(20px, 4vw, 34px);
+      background: rgba(255,255,255,.82);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+    }
+    .panel h2 {
+      margin: 0 0 22px;
+      font-size: 25px;
+      font-weight: 600;
+    }
+    .field { margin-bottom: 18px; }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      background: #fff;
+      color: var(--text);
+      font: 16px Georgia, serif;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(138,109,59,.12);
+    }
+    textarea { min-height: 150px; resize: vertical; line-height: 1.5; }
+    .hint { margin-top: 7px; color: var(--muted); font-size: 13px; }
+    .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    button {
+      padding: 13px 20px;
+      border: 1px solid var(--text);
+      border-radius: 7px;
+      background: var(--text);
+      color: #fff;
+      font: 15px Georgia, serif;
+      cursor: pointer;
+      transition: background .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    button:hover:not(:disabled) {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    button:disabled { opacity: .6; cursor: wait; }
+    .status { min-height: 22px; color: var(--muted); font-size: 14px; line-height: 1.45; }
+    .status.success { color: #356b43; }
+    .status.error { color: #a83232; }
+    .honeypot {
+      position: absolute !important;
+      left: -10000px !important;
+      width: 1px !important;
+      height: 1px !important;
+      overflow: hidden !important;
+    }
+    .reviews-section { margin-top: 46px; }
+    .section-heading {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .section-heading h2 { margin: 0; font-size: 28px; font-weight: 600; }
+    .count { color: var(--muted); font-size: 14px; }
+    .review-list { display: grid; gap: 14px; }
+    .review-card {
+      padding: 22px 24px;
+      background: rgba(255,255,255,.75);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    .review-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .review-name { margin: 0; font-size: 19px; font-weight: 600; overflow-wrap: anywhere; }
+    .review-date { color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .review-message { margin: 0; font-size: 16px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .empty-state {
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      background: rgba(255,255,255,.55);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      line-height: 1.6;
+    }
+    .refresh-row { display: flex; justify-content: center; margin-top: 18px; }
+    .refresh-button {
+      padding: 10px 16px;
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+    .refresh-button:hover:not(:disabled) { color: #fff; }
+    footer { padding: 22px 16px 30px; text-align: center; color: var(--muted); font-size: 13px; }
+    @media (max-width: 600px) {
+      header { height: 62px; padding: 0 16px; }
+      .site-title { font-size: 18px; }
+      .back-link { font-size: 14px; }
+      main { padding-top: 38px; }
+      .review-card { padding: 18px; }
+      .review-top { display: block; }
+      .review-date { display: block; margin-top: 5px; }
+      .actions { align-items: stretch; }
+      .actions button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="site-title" href="index.html">ЧТИВО</a>
+    <a class="back-link" href="index.html">← На главную</a>
+  </header>
+
+  <main>
+    <section class="intro">
+      <h1>Отзывы</h1>
+      <p class="subtitle">Поделитесь впечатлениями о сайте и предложите, что можно улучшить. Отзывы публикуются после проверки.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="form-title">
+      <h2 id="form-title">Оставить отзыв</h2>
+      <form id="reviewForm">
+        <div class="field">
+          <label for="reviewName">Ваше имя</label>
+          <input id="reviewName" name="name" type="text" maxlength="60" required autocomplete="name" placeholder="Как к вам обращаться?">
+        </div>
+        <div class="field">
+          <label for="reviewMessage">Текст отзыва</label>
+          <textarea id="reviewMessage" name="message" maxlength="2000" required placeholder="Напишите, что вы думаете о сайте..."></textarea>
+          <div class="hint">До 2000 символов. Не указывайте личные данные.</div>
+        </div>
+        <div class="honeypot" aria-hidden="true">
+          <label for="website">Не заполняйте это поле</label>
+          <input id="website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="actions">
+          <button id="submitButton" type="submit">Отправить отзыв</button>
+          <div id="formStatus" class="status" role="status" aria-live="polite"></div>
+        </div>
+      </form>
+    </section>
+
+    <section class="reviews-section" aria-labelledby="reviews-title">
+      <div class="section-heading">
+        <h2 id="reviews-title">Опубликованные отзывы</h2>
+        <span id="reviewCount" class="count"></span>
+      </div>
+      <div id="reviewList" class="review-list" aria-live="polite">
+        <div class="empty-state">Загружаем отзывы…</div>
+      </div>
+      <div class="refresh-row">
+        <button id="refreshButton" class="refresh-button" type="button">Обновить список</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>ЧТИВО · Спасибо, что помогаете сделать сайт лучше</footer>
+
+  <script>
+    // Публичный адрес API на Steam Deck через Tailscale Funnel.
+    const API_BASE = 'https://steamdeck.tail7f2830.ts.net';
+
+    const form = document.getElementById('reviewForm');
+    const nameInput = document.getElementById('reviewName');
+    const messageInput = document.getElementById('reviewMessage');
+    const honeypotInput = document.getElementById('website');
+    const submitButton = document.getElementById('submitButton');
+    const formStatus = document.getElementById('formStatus');
+    const reviewList = document.getElementById('reviewList');
+    const reviewCount = document.getElementById('reviewCount');
+    const refreshButton = document.getElementById('refreshButton');
+
+    function setFormStatus(message, type = '') {
+      formStatus.textContent = message;
+      formStatus.className = `status ${type}`.trim();
+    }
+
+    function formatDate(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '';
+      return new Intl.DateTimeFormat('ru-RU', {
+        day: 'numeric', month: 'long', year: 'numeric'
+      }).format(date);
+    }
+
+    function renderReviews(reviews) {
+      reviewList.replaceChildren();
+      reviewCount.textContent = reviews.length
+        ? `Всего: ${reviews.length}`
+        : '';
+
+      if (!reviews.length) {
+        const empty = document.createElement('div');
+        empty.className = 'empty-state';
+        empty.textContent = 'Пока нет опубликованных отзывов. Будьте первым!';
+        reviewList.appendChild(empty);
+        return;
+      }
+
+      reviews.forEach((review) => {
+        const card = document.createElement('article');
+        card.className = 'review-card';
+
+        const top = document.createElement('div');
+        top.className = 'review-top';
+
+        const name = document.createElement('h3');
+        name.className = 'review-name';
+        name.textContent = review.name || 'Посетитель';
+
+        const date = document.createElement('time');
+        date.className = 'review-date';
+        date.textContent = formatDate(review.created_at);
+        if (review.created_at) date.dateTime = review.created_at;
+
+        const message = document.createElement('p');
+        message.className = 'review-message';
+        message.textContent = review.message || '';
+
+        top.append(name, date);
+        card.append(top, message);
+        reviewList.appendChild(card);
+      });
+    }
+
+    async function loadReviews() {
+      refreshButton.disabled = true;
+      try {
+        const response = await fetch(`${API_BASE}/api/reviews`, {
+          method: 'GET',
+          headers: { 'Accept': 'application/json' },
+          cache: 'no-store'
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const reviews = await response.json();
+        if (!Array.isArray(reviews)) throw new Error('Некорректный ответ сервера');
+        renderReviews(reviews);
+      } catch (error) {
+        reviewList.replaceChildren();
+        reviewCount.textContent = '';
+        const unavailable = document.createElement('div');
+        unavailable.className = 'empty-state';
+        unavailable.textContent = 'Не удалось загрузить отзывы. Возможно, сервер временно выключен. Попробуйте обновить страницу позже.';
+        reviewList.appendChild(unavailable);
+      } finally {
+        refreshButton.disabled = false;
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const name = nameInput.value.trim();
+      const message = messageInput.value.trim();
+      const website = honeypotInput.value;
+
+      if (!name || !message) {
+        setFormStatus('Заполните имя и текст отзыва.', 'error');
+        return;
+      }
+      if (name.length > 60 || message.length > 2000) {
+        setFormStatus('Проверьте длину имени и текста отзыва.', 'error');
+        return;
+      }
+
+      submitButton.disabled = true;
+      setFormStatus('Отправляем отзыв…');
+
+      try {
+        const response = await fetch(`${API_BASE}/api/reviews`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ name, message, website })
+        });
+        const result = await response.json().catch(() => ({}));
+
+        if (response.status === 202) {
+          form.reset();
+          setFormStatus('Спасибо! Отзыв отправлен и появится на сайте после проверки.', 'success');
+        } else {
+          setFormStatus(result.error || 'Не удалось отправить отзыв. Попробуйте позже.', 'error');
+        }
+      } catch (error) {
+        setFormStatus('Сервер отзывов временно недоступен. Попробуйте позже.', 'error');
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+
+    refreshButton.addEventListener('click', loadReviews);
+    loadReviews();
+  </script>
+</body>
+</html>
